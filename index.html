@@ -117,51 +117,6 @@
                     // this.stroke();
                 }
             }, // f3
-            function f4(context) {
-                this.rect(0, 0, this.size.width, this.size.height);
-                this.clear();
-
-                for(var i = 0; i < 20; i++) {
-                    var x = this.mouse.x + Math.random() * 40 - 20,
-                        y = this.mouse.y + Math.random() * 40 - 20;
-                    
-                    this.polygon([
-                        [0, 0],
-                        [x, y],
-                        [this.size.width, 0]
-                    ]);
-                    this.setFillColor(0, 127, 127, 12);
-                    this.fill();
-                    // this.stroke();
-
-                    this.polygon([
-                        [this.size.width, 0],
-                        [x, y],
-                        [this.size.width, this.size.height]
-                    ]);
-                    this.setFillColor(0, 255, 0, 12);
-                    this.fill();
-                    // this.stroke();
-
-                    this.polygon([
-                        [this.size.width, this.size.height],
-                        [x, y],
-                        [0, this.size.height]
-                    ]);
-                    this.setFillColor(255, 0, 0, 12);
-                    this.fill();
-                    // this.stroke();
-
-                    this.polygon([
-                        [0, this.size.height],
-                        [x, y],
-                        [0, 0]
-                    ]);
-                    this.setFillColor(0, 0, 255, 12);
-                    this.fill();
-                    // this.stroke();
-                }
-            }, // f4
             function f5(context) {
                 this.rect(0, 0, this.size.width, this.size.height);
                 this.clear();
