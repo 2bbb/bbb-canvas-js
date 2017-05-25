@@ -1,0 +1,265 @@
+<html>
+    <head>
+        <title>bbb.canvas.js</title>
+        <link href="./font/NotoSerifJapanese.css" rel="stylesheet" type="text/css">
+        <style>
+            html {
+                height: 100%;
+            }
+            body {
+                background-color: #000;
+                padding: 0;
+                margin: 0;
+                color: #fff;
+                font-family: 'Noto Serif Japanese', serif;
+            }
+            #canvas {
+                position: fixed;
+                top: 0;
+                left: 0;
+                z-index: -1;
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+            #menu {
+                position: fixed;
+                top: 5px;
+                right: 10px;
+            }
+        </style>
+    </head>
+<body>
+    <article>
+        <h1>bbb.canvas.js</h1>
+        <section>
+            <script> for(var i = 0; i < 100; i++) document.write('<p>line ' + i + '</p>'); </script>
+        </section>
+    </article>
+    <canvas id="canvas"></canvas>
+    <script src="./libs/jquery-3.2.1.min.js"></script>
+    <script src="./src/bbb.js"></script>
+    <script src="./src/bbb.noise.js"></script>
+    <script src="./src/bbb.canvas.js"></script>
+    <script>
+        var draws = [
+            function f1(context) {
+                this.rect(0, 0, this.size.width, this.size.height);
+                this.clear();
+                for(var i = 0; i < 10; i++) {
+                    var s = Math.min(this.size.width, this.size.height) * 0.16 * (1.5 + Math.sin(this.frame * 0.001));
+                    var sx = Math.cos(Math.PI * 0.25 + this.frame * 0.01) * s,
+                        sy = Math.sin(Math.PI * 0.25 + this.frame * 0.01) * s,
+                        ex = Math.cos(Math.PI * 0.75 + this.frame * 0.011) * s,
+                        ey = Math.sin(Math.PI * 0.75 + this.frame * 0.011) * s,
+                        cx = this.center.x,
+                        cy = this.center.y;
+                    this.setStrokeColor(255, 255, 255, 127);
+                    this.beginPath();
+                    for(var i = 1; i <= 20; i++) {
+                        this.setFillColor(255, 255, 255, 32);
+                        var d = (Math.random() - 0.5) * this.scroll_pos,
+                            x = Math.cos(this.frame * 0.003 * i) * s * (1.5 + Math.cos(this.frame * 0.01 + d)),
+                            y = Math.sin(this.frame * 0.003 * i) * s * (1.5 + Math.cos(this.frame * 0.01 + d));
+                        this.lineTo(cx + sx, cy + sy);
+                        this.lineTo(cx + x, cy + y);
+                        this.lineTo(cx + ex, cy + ey);
+                        this.closePath();
+                    }
+                    this.fill();
+                    this.stroke();
+                }
+            }, // f1
+            function f3(context) {
+                this.rect(0, 0, this.size.width, this.size.height);
+                this.clear();
+
+                for(var i = 0; i < 20; i++) {
+                    var x = this.mouse.x + Math.random() * 40 - 20,
+                        y = this.mouse.y + Math.random() * 40 - 20;
+                    
+                    this.polygon([
+                        [0, 0],
+                        [x, y],
+                        [this.size.width, 0]
+                    ]);
+                    this.setFillColor(0, 127, 127, 12);
+                    this.fill();
+                    // this.stroke();
+
+                    this.polygon([
+                        [this.size.width, 0],
+                        [x, y],
+                        [this.size.width, this.size.height]
+                    ]);
+                    this.setFillColor(0, 255, 0, 12);
+                    this.fill();
+                    // this.stroke();
+
+                    this.polygon([
+                        [this.size.width, this.size.height],
+                        [x, y],
+                        [0, this.size.height]
+                    ]);
+                    this.setFillColor(255, 0, 0, 12);
+                    this.fill();
+                    // this.stroke();
+
+                    this.polygon([
+                        [0, this.size.height],
+                        [x, y],
+                        [0, 0]
+                    ]);
+                    this.setFillColor(0, 0, 255, 12);
+                    this.fill();
+                    // this.stroke();
+                }
+            }, // f3
+            function f4(context) {
+                this.rect(0, 0, this.size.width, this.size.height);
+                this.clear();
+
+                for(var i = 0; i < 20; i++) {
+                    var x = this.mouse.x + Math.random() * 40 - 20,
+                        y = this.mouse.y + Math.random() * 40 - 20;
+                    
+                    this.polygon([
+                        [0, 0],
+                        [x, y],
+                        [this.size.width, 0]
+                    ]);
+                    this.setFillColor(0, 127, 127, 12);
+                    this.fill();
+                    // this.stroke();
+
+                    this.polygon([
+                        [this.size.width, 0],
+                        [x, y],
+                        [this.size.width, this.size.height]
+                    ]);
+                    this.setFillColor(0, 255, 0, 12);
+                    this.fill();
+                    // this.stroke();
+
+                    this.polygon([
+                        [this.size.width, this.size.height],
+                        [x, y],
+                        [0, this.size.height]
+                    ]);
+                    this.setFillColor(255, 0, 0, 12);
+                    this.fill();
+                    // this.stroke();
+
+                    this.polygon([
+                        [0, this.size.height],
+                        [x, y],
+                        [0, 0]
+                    ]);
+                    this.setFillColor(0, 0, 255, 12);
+                    this.fill();
+                    // this.stroke();
+                }
+            }, // f4
+            function f5(context) {
+                this.rect(0, 0, this.size.width, this.size.height);
+                this.clear();
+
+                this.context.lineWidth = 0.3;
+                this.setStrokeColor(255, 255, 255, 32);
+                this.setFillColor(255, 255, 255, 32);
+                for(var i = 0; i < 100; i++) {
+                    var x = this.px(i),
+                        y = this.py(i);
+                    this.line(this.points[i][0], this.points[i][1], x, y);
+                    // this.point(x, y);
+                    this.points[i][0] = x;
+                    this.points[i][1] = y;
+                }
+                this.stroke();
+            }, // f5
+            function f6(context) {
+                this.clear();
+                // this.setFillColor(0, 0, 0, 10);
+                // this.rect(0, 0, this.size.width, this.size.height);
+                this.setStrokeColor(255, 255, 255);
+                // this.indecies.forEach(function(index) {
+                //     this.point((bbb.noise.perlin3(index[0] * 0.01, index[1] * 0.01, this.frame * 0.01) + 1.0) * this.size.width * 0.5,
+                //                (bbb.noise.perlin3(index[0] * 0.01, index[1] * 0.01, 1.0 + this.frame * 0.01) + 1.0) * this.size.height * 0.5);
+                // }, this);
+                var w = this.size.width / this.grid_size,
+                    h = this.size.height / this.grid_size;
+                var ps = Math.cos(Math.PI * 0.5 * bbb.noise.perlin2(this.scroll_pos, this.frame * 0.01));
+                var len2 = this.size.width * this.size.width + this.size.height * this.size.height;
+                this.indecies.forEach(function(index) {
+                    var s = ps * (bbb.noise.perlin3(index[0] * 0.01, index[1] * 0.01 + this.scroll_pos, this.frame * 0.01) + 1.0) * 0.5;
+                    var x = (index[0] + 0.5) * w, y = (index[1] + 0.5) * h;
+                    var dx = x - this.mouse.x, dy = y - this.mouse.y;
+                    var d = Math.max(0.0, ((dx * dx + dy * dy) / len2 * 1.5));
+                    s *= Math.pow(Math.sin(Math.PI * 0.5 * d), 0.11432);
+                    // this.setStrokeColor(s * 128, s * 128, s * 128);
+                    // this.strokeRect(x - s * w * 0.5, y - s * h * 0.5, s * w, s * h);
+                    this.setFillColorHSV(this.frame % 400 * 0.0025, this.scroll_pos * 0.5, 0.5);
+                    this.rect(x - s * w * 0.5, y - s * h * 0.5, s * w, s * h);
+                }, this);
+            }
+        ]
+        $(function() {
+            bbb.noise.seed(Math.random());
+            var renderer = new bbb.canvas.renderer(
+                document.getElementById('canvas'), {
+                    properties: {
+                        indecies: (function(grid_size) {
+                            grid_size = grid_size || 64;
+                            var arr = [];
+                            for(var i = 0; i < grid_size; i++) {
+                                for(var j = 0; j < grid_size; j++) {
+                                    arr.push([i, j]);
+                                }
+                            }
+                            return arr;
+                        })(64),
+                        grid_size: 64,
+                        ease_x: 0.0,
+                        ease_y: 0.0,
+                        points: [],
+                        px: function(i) {
+                            return (bbb.noise.perlin3(i * 0.01, Math.cos(i) * 0.1 + this.ease_x * 0.01, this.frame * 0.001) + 1) * this.size.width * 0.5;
+                        },
+                        py: function(i) {
+                            return (bbb.noise.perlin3(i * 0.01, Math.sin(i) * 0.1 + this.ease_y * 0.01, this.frame * 0.001) + 1) * this.size.height * 0.5
+                        },
+                    },
+                    setup: function(context) {
+                        for(var i = 0; i < 100; i++) {
+                            var x = (bbb.noise.perlin3(i * 0.01, i * 0.01 + this.ease_x * 0.01, this.frame * 0.001) + 1) * this.size.width * 0.5,
+                                y = (bbb.noise.perlin3(i * 0.01, i * i * 0.01 - this.ease_y * 0.01, this.frame * 0.001) + 1) * this.size.height * 0.5;
+                            this.points[i] = [x, y];
+                        }
+                    },
+                    update: function(context) {
+                        var p = 0.95;
+                        if(this.ease_x == 0 && this.ease_y == 0) {
+                            this.ease_x = this.mouse.x;
+                            this.ease_y = this.mouse.y;
+                        }
+                        this.ease_x = this.ease_x * p + this.mouse.x * (1.0 - p);
+                        this.ease_y = this.ease_y * p + this.mouse.y * (1.0 - p);
+                    },
+                    draw: draws[draws.length - 1],
+                }
+            );
+            renderer.start();
+            $('#menu').change(function() {
+                renderer.set_draw(draws[0 ^ $('#menu option:selected').val()]);
+            });
+        });
+        document.write('<select id="menu">');
+        for(var i = 0; i < draws.length; i++) {
+            document.write('<option' + ((i == draws.length - 1) ? ' selected' : '') + ' value="' + i + '">' + draws[i].name + '</option>');
+        }
+        document.write('</select>');
+
+    </script>
+</body>
+</html>

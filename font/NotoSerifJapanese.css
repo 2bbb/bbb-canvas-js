@@ -1,0 +1,42 @@
+@font-face {
+    font-family: 'Noto Serif Japanese';
+    font-style: normal;
+    font-weight: 100;
+    src: url(./NotoSerifCJKjp/NotoSerifCJKjp-ExtraLight.otf) format('opentype');
+}
+@font-face {
+    font-family: 'Noto Serif Japanese';
+    font-style: normal;
+    font-weight: 200;
+    src: url(./NotoSerifCJKjp/NotoSerifCJKjp-Light.otf) format('opentype');
+}
+@font-face {
+    font-family: 'Noto Serif Japanese';
+    font-style: normal;
+    font-weight: 400;
+    src: url(./NotoSerifCJKjp/NotoSerifCJKjp-Regular.otf) format('opentype');
+}
+@font-face {
+    font-family: 'Noto Serif Japanese';
+    font-style: normal;
+    font-weight: 500;
+    src: url(./NotoSerifCJKjp/NotoSerifCJKjp-Medium.otf) format('opentype');
+}
+@font-face {
+    font-family: 'Noto Serif Japanese';
+    font-style: normal;
+    font-weight: 600;
+    src: url(./NotoSerifCJKjp/NotoSerifCJKjp-SemiBold.otf) format('opentype');
+}
+@font-face {
+    font-family: 'Noto Serif Japanese';
+    font-style: normal;
+    font-weight: 700;
+    src: url(./NotoSerifCJKjp/NotoSerifCJKjp-Bold.otf) format('opentype');
+}
+@font-face {
+    font-family: 'Noto Serif Japanese';
+    font-style: normal;
+    font-weight: 900;
+    src: url(./NotoSerifCJKjp/NotoSerifCJKjp-Black.otf) format('opentype');
+}
