@@ -34,6 +34,7 @@
     <article>
         <h1>bbb.canvas.js</h1>
         <section>
+            <code><pre id="code_example"></pre></code>
             <a href="https://github.com/2bbb/bbb-canvas-js">github</a>
             <script> for(var i = 0; i < 100; i++) document.write('<p>line ' + i + '</p>'); </script>
         </section>
@@ -207,15 +208,17 @@
             );
             renderer.start();
             $('#menu').change(function() {
-                renderer.set_draw(draws[0 ^ $('#menu option:selected').val()]);
+                var index = 0 ^ $('#menu option:selected').val();
+                renderer.set_draw(draws[index]);
+                $('#code_example').text(draws[index].toString());
             });
+            $('#code_example').text(draws[draws.length - 1].toString());
         });
         document.write('<select id="menu">');
         for(var i = 0; i < draws.length; i++) {
             document.write('<option' + ((i == draws.length - 1) ? ' selected' : '') + ' value="' + i + '">' + draws[i].name + '</option>');
         }
         document.write('</select>');
-
     </script>
 </body>
 </html>
