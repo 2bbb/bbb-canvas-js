@@ -135,8 +135,10 @@
 
                 // this.context.lineWidth = 0.3;
                 this.beginPath();
-                this.setStrokeColor(255, 255, 255, 128);
+                var color_flick = 127 * this.scroll_pos;
                 for(var i = 0; i < 400; i++) {
+                    var gray = 255 - Math.random() * color_flick;
+                    this.setStrokeColor(gray, gray, gray, 128);
                     var x = this.px(i),
                         y = this.py(i);
                     this.line(this.points[i][0], this.points[i][1], x, y);
