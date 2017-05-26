@@ -98,7 +98,19 @@ bbb.canvas.renderer = (function() {
             this.frame++;
         },
         set_update: function(new_update) { this.update = new_update; },
-        set_draw: function(new_draw) { this.draw = new_draw; },
+        set_draw: function(new_draw, with_clear_context) {
+            if(with_clear_context) {
+                this.draw = (function(that, new_draw) {
+                    return function() {
+                        that.clear();
+                        that.draw = new_draw;
+                        that.draw(that.context);
+                    };
+                })(this, new_draw);
+            } else {
+                this.draw = new_draw;
+            }
+        },
         init: function() {
             var that = this;
             this.resize();
