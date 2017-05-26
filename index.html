@@ -125,7 +125,7 @@
                 // this.context.lineWidth = 0.3;
                 this.beginPath();
                 this.setStrokeColor(255, 255, 255, 128);
-                for(var i = 0; i < 100; i++) {
+                for(var i = 0; i < 400; i++) {
                     var x = this.px(i),
                         y = this.py(i);
                     this.line(this.points[i][0], this.points[i][1], x, y);
@@ -188,9 +188,9 @@
                         },
                     },
                     setup: function(context) {
-                        for(var i = 0; i < 100; i++) {
-                            var x = (bbb.noise.perlin3(i * 0.01, i * 0.01 + this.ease_x * 0.01, this.frame * 0.001) + 1) * this.size.width * 0.5,
-                                y = (bbb.noise.perlin3(i * 0.01, i * i * 0.01 - this.ease_y * 0.01, this.frame * 0.001) + 1) * this.size.height * 0.5;
+                        for(var i = 0; i < 400; i++) {
+                            var x = (bbb.noise.perlin3(i * 0.005, i * 0.005 + this.ease_x * 0.005, this.frame * 0.001) + 1) * this.size.width * 0.5,
+                                y = (bbb.noise.perlin3(i * 0.005, i * i * 0.005 - this.ease_y * 0.005, this.frame * 0.001) + 1) * this.size.height * 0.5;
                             this.points[i] = [x, y];
                         }
                     },
