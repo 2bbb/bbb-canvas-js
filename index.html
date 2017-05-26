@@ -134,9 +134,9 @@
                 this.rect(0, 0, this.size.width, this.size.height);
 
                 // this.context.lineWidth = 0.3;
-                this.beginPath();
                 var color_flick = 127 * this.scroll_pos;
                 for(var i = 0; i < 400; i++) {
+                    this.beginPath();
                     var gray = 255 - Math.random() * color_flick;
                     this.setStrokeColor(gray, gray, gray, 128);
                     var x = this.px(i),
@@ -145,8 +145,8 @@
                     // this.point(x, y);
                     this.points[i][0] = x;
                     this.points[i][1] = y;
+                    this.stroke();
                 }
-                this.stroke();
             }, // f5
             function f6(context) {
                 this.clear();
