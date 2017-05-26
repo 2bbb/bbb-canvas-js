@@ -78,8 +78,8 @@
                 this.clear();
 
                 for(var i = 0; i < 20; i++) {
-                    var x = this.mouse.x + Math.random() * 40 - 20,
-                        y = this.mouse.y + Math.random() * 40 - 20;
+                    var x = this.mouse.x + this.scroll_pos * (Math.random() * 120 - 60),
+                        y = this.mouse.y + this.scroll_pos * (Math.random() * 120 - 60);
                     
                     this.polygon([
                         [0, 0],
