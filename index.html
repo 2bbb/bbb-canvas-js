@@ -163,6 +163,8 @@
         ]
         $(function() {
             bbb.noise.seed(Math.random());
+            var hash = window.location.hash.replace('#', '');
+            var draw_index = Math.max(0, Math.min(draws.length - 1, ((hash == '') ? (draws.length - 1) : (0 ^ hash))));
             var renderer = new bbb.canvas.renderer(
                 document.getElementById('canvas'), {
                     properties: {
@@ -203,16 +205,17 @@
                         this.ease_x = this.ease_x * p + this.mouse.x * (1.0 - p);
                         this.ease_y = this.ease_y * p + this.mouse.y * (1.0 - p);
                     },
-                    draw: draws[draws.length - 1],
+                    draw: draws[draw_index],
                 }
             );
             renderer.start();
             $('#menu').change(function() {
                 var index = 0 ^ $('#menu option:selected').val();
                 renderer.set_draw(draws[index], true);
+                window.location.hash = index;
                 $('#code_example').text(draws[index].toString());
             });
-            $('#code_example').text(draws[draws.length - 1].toString());
+            $('#code_example').text(draws[draw_index].toString());
         });
         document.write('<select id="menu">');
         for(var i = 0; i < draws.length; i++) {
