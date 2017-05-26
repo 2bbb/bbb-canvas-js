@@ -161,10 +161,10 @@
                 }, this);
             }
         ]
+        var hash = window.location.hash.replace('#', '');
+        var draw_index = Math.max(0, Math.min(draws.length - 1, ((hash == '') ? (draws.length - 1) : (0 ^ hash))));
         $(function() {
             bbb.noise.seed(Math.random());
-            var hash = window.location.hash.replace('#', '');
-            var draw_index = Math.max(0, Math.min(draws.length - 1, ((hash == '') ? (draws.length - 1) : (0 ^ hash))));
             var renderer = new bbb.canvas.renderer(
                 document.getElementById('canvas'), {
                     properties: {
@@ -219,7 +219,7 @@
         });
         document.write('<select id="menu">');
         for(var i = 0; i < draws.length; i++) {
-            document.write('<option' + ((i == draws.length - 1) ? ' selected' : '') + ' value="' + i + '">' + draws[i].name + '</option>');
+            document.write('<option' + ((i == draw_index) ? ' selected' : '') + ' value="' + i + '">' + draws[i].name + '</option>');
         }
         document.write('</select>');
     </script>
