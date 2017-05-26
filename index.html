@@ -58,8 +58,8 @@
                         cx = this.center.x,
                         cy = this.center.y;
                     this.setStrokeColor(255, 255, 255, 127);
-                    this.beginPath();
                     for(var i = 1; i <= 20; i++) {
+                        this.beginPath();
                         this.setFillColor(255, 255, 255, 32);
                         var d = (Math.random() - 0.5) * this.scroll_pos,
                             x = Math.cos(this.frame * 0.003 * i) * s * (1.5 + Math.cos(this.frame * 0.01 + d)),
@@ -68,9 +68,9 @@
                         this.lineTo(cx + x, cy + y);
                         this.lineTo(cx + ex, cy + ey);
                         this.closePath();
+                        this.fill();
+                        this.stroke();
                     }
-                    this.fill();
-                    this.stroke();
                 }
             }, // f1
             function f3(context) {
@@ -122,9 +122,9 @@
                 this.setFillColor(0, 0, 0, 32);
                 this.rect(0, 0, this.size.width, this.size.height);
 
-                this.context.lineWidth = 0.3;
-                this.setStrokeColor(255, 255, 255, 32);
-                this.setFillColor(255, 255, 255, 32);
+                // this.context.lineWidth = 0.3;
+                this.beginPath();
+                this.setStrokeColor(255, 255, 255, 128);
                 for(var i = 0; i < 100; i++) {
                     var x = this.px(i),
                         y = this.py(i);
@@ -209,7 +209,7 @@
             renderer.start();
             $('#menu').change(function() {
                 var index = 0 ^ $('#menu option:selected').val();
-                renderer.set_draw(draws[index]);
+                renderer.set_draw(draws[index], true);
                 $('#code_example').text(draws[index].toString());
             });
             $('#code_example').text(draws[draws.length - 1].toString());
