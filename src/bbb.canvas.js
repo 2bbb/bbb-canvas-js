@@ -56,7 +56,7 @@ bbb.canvas.renderer = (function() {
             context: canvas.getContext('2d'),
             
             frame: 0,
-            scroll_pos: 0.0,
+            scroll_pos: 1.0,
             scroll_height: $window.height() - $canvas.height(),
             size: { width: $canvas.width(), height: $canvas.height() },
             center: { x: $canvas.width() * 0.5, y: $canvas.height() * 0.5 },
@@ -64,6 +64,7 @@ bbb.canvas.renderer = (function() {
             setup: function(context) {},
             update: function(context) {},
             draw: function(context) {},
+            resize: function() {},
             is_paused: false,
 
             // draw properties
@@ -77,25 +78,28 @@ bbb.canvas.renderer = (function() {
     };
 
     bbb.extend(renderer.prototype, {
-        resize: function() {
-            this.$canvas.attr('width', this.$canvas.width());
-            this.$canvas.attr('height', this.$canvas.height());
-            this.size.width = this.$canvas.width();
-            this.size.height = this.$canvas.height();
-            this.center.x = this.$canvas.width() * 0.5;
-            this.center.y = this.$canvas.height() * 0.5;
-            this.scroll_height = (this.$document.height() == this.$window.height()) ? -1 : (this.$document.height() - this.$window.height());
+        bind: function(f) { return f.bind(this); },
+        internal: {
+            resize: function() {
+                this.$canvas.attr('width', this.$canvas.width());
+                this.$canvas.attr('height', this.$canvas.height());
+                this.size.width = this.$canvas.width();
+                this.size.height = this.$canvas.height();
+                this.center.x = this.$canvas.width() * 0.5;
+                this.center.y = this.$canvas.height() * 0.5;
+                this.scroll_height = (this.$document.height() == this.$window.height()) ? -1 : (this.$document.height() - this.$window.height());
+            },
+            update: function() {
+                this.scroll_pos = Math.min(1.0, Math.max(0.0, this.scroll_height < 0 ? 1.0 : (this.$window.scrollTop() / this.scroll_height)));
+                this.frame++;
+            },
         },
         render: function() {
             if(this.is_paused) return;
-            this.update_internal();
+            this.bind(this.internal.update)();
             this.update(this.context);
             this.draw(this.context);
             requestAnimationFrame(this.render.bind(this));
-        },
-        update_internal: function() {
-            this.scroll_pos = this.scroll_height < 0 ? -1.0 : (this.$window.scrollTop() / this.scroll_height);
-            this.frame++;
         },
         set_update: function(new_update) { this.update = new_update; },
         set_draw: function(new_draw, with_clear_context) {
@@ -111,17 +115,21 @@ bbb.canvas.renderer = (function() {
                 this.draw = new_draw;
             }
         },
+        set_resize: function(new_resize) { this.resize = new_resize; },
         init: function() {
             var that = this;
-            this.resize();
+            function resize() {
+                that.bind(that.internal.resize)();
+                that.resize();
+            }
             this.$document.mousemove(function(event) {
                 that.mouse.x = event.pageX;
                 that.mouse.y = event.pageY - that.$window.scrollTop();
             });
-            this.$window.resize(function() {
-                that.resize();
-            });
+            this.$window.resize(resize);
+            this.$document.change(resize).resize(resize);
             this.setup();
+            resize();
             return this;
         },
         start: function() {
