@@ -208,7 +208,7 @@
                 //     this.point((bbb.noise.perlin3(index[0] * 0.01, index[1] * 0.01, this.frame * 0.01) + 1.0) * this.size.width * 0.5,
                 //                (bbb.noise.perlin3(index[0] * 0.01, index[1] * 0.01, 1.0 + this.frame * 0.01) + 1.0) * this.size.height * 0.5);
                 // }, this);
-                var num = (this.scroll_pos * 49 + 1) ^ 0;
+                var num = Math.pow(2, this.scroll_pos * 6) ^ 0;
                 var w = this.size.width / num,
                     h = this.size.height / num;
                 var ps = Math.cos(Math.PI * 0.5 * bbb.noise.perlin2(this.scroll_pos, this.frame * 0.01));
