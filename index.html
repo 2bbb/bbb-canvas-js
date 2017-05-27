@@ -208,13 +208,14 @@
                 //     this.point((bbb.noise.perlin3(index[0] * 0.01, index[1] * 0.01, this.frame * 0.01) + 1.0) * this.size.width * 0.5,
                 //                (bbb.noise.perlin3(index[0] * 0.01, index[1] * 0.01, 1.0 + this.frame * 0.01) + 1.0) * this.size.height * 0.5);
                 // }, this);
-                var w = this.size.width / this.grid_size,
-                    h = this.size.height / this.grid_size;
+                var num = (this.scroll_pos * 49 + 1) ^ 0;
+                var w = this.size.width / num,
+                    h = this.size.height / num;
                 var ps = Math.cos(Math.PI * 0.5 * bbb.noise.perlin2(this.scroll_pos, this.frame * 0.01));
                 var len2 = this.size.width * this.size.width + this.size.height * this.size.height;
-                this.indecies.forEach(function(index) {
-                    var s = ps * (bbb.noise.perlin3(index[0] * 0.01, index[1] * 0.01 + this.scroll_pos, this.frame * 0.01) + 1.0) * 0.5;
-                    var x = (index[0] + 0.5) * w, y = (index[1] + 0.5) * h;
+                for(var i = 0; i < num; i++) for(var j = 0; j < num; j++) {
+                    var s = ps * (bbb.noise.perlin3(i / num, j / num + this.scroll_pos, this.frame * 0.01) + 1.0) * 0.5;
+                    var x = (i + 0.5) * w, y = (j + 0.5) * h;
                     var dx = x - this.mouse.x, dy = y - this.mouse.y;
                     var d = Math.max(0.0, ((dx * dx + dy * dy) / len2 * 1.5));
                     s *= Math.pow(Math.sin(Math.PI * 0.5 * d), 0.11432);
@@ -222,7 +223,7 @@
                     // this.strokeRect(x - s * w * 0.5, y - s * h * 0.5, s * w, s * h);
                     this.setFillColorHSV(this.frame % 400 * 0.0025, this.scroll_pos * 0.5, 0.5);
                     this.rect(x - s * w * 0.5, y - s * h * 0.5, s * w, s * h);
-                }, this);
+                }
             }, // draw_perlin_rects
             function draw_clock(context) {
                 this.clear();
