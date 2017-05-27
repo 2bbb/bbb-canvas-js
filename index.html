@@ -293,6 +293,31 @@
                     }
                 }
             }, // draw_clock
+            function draw_clifford(context) {
+                this.clear();
+                var x = this.frame * 0.01, y = 0.0;
+                var nx, ny;
+                var a = 1.675 + 0.5 * this.mouse.x / this.size.width,
+                    b = 1.675 + 0.5 * this.mouse.y / this.size.height,
+                    c = this.scroll_pos * 0.1 + 0.55,
+                    d = 1.2 + Math.sin(this.frame * 0.01) * 0.5;
+                var hw = 0.5 * this.size.width,
+                    hh = 0.5 * this.size.height,
+                    h = Math.min(hw, hh),
+                    s = h / Math.max(1.0 + Math.abs(c), 1.0 + Math.abs(d));
+
+                // this.setStrokeColor(255, 255, 255, 32);
+                this.setFillColor(255, 255, 255, 192);
+                this.beginPath();
+
+                for(var i = 0; i < 6400; i++) {
+                    nx = Math.sin(a * y) + c * Math.cos(a * x);
+                    ny = Math.sin(b * x) + d * Math.cos(b * y);
+                    this.rect(hw + s * nx - 0.75, hh + s * ny - 0.75, 1.5, 1.5);
+                    x = nx;
+                    y = ny;
+                }
+            }, //draw_clifford
         ];
         var hash = window.location.hash.replace('#', '');
         var draw_index = bbb.math.clamp((hash == '') ? (draws.length - 1) : (0 ^ hash), 0, draws.length - 1);
