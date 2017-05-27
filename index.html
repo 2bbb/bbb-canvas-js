@@ -324,10 +324,10 @@
                         ease_y: 0.0,
                         points: [],
                         px: function(i) {
-                            return (bbb.noise.perlin3(i * 0.01, Math.cos(i) * 0.1 + this.ease_x * 0.01, this.frame * 0.001) + 1) * this.size.width * 0.5;
+                            return (bbb.noise.perlin3(i * 0.03, Math.cos(i) * 0.1 + this.ease_x * 0.001, this.frame * 0.001) + 1) * this.size.width * 0.5;
                         },
                         py: function(i) {
-                            return (bbb.noise.perlin3(i * 0.03 + this.scroll_pos, Math.sin(i) * 0.1 + this.ease_y * 0.001, this.frame * 0.001) + 1) * this.size.height * 0.5
+                            return (bbb.noise.perlin3(i * 0.03 + 2.0 * this.scroll_pos, Math.sin(i) * 0.1 + this.ease_y * 0.001, this.frame * 0.001) + 1) * this.size.height * 0.5
                         },
                     },
                     setup: function(context) {
