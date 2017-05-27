@@ -309,7 +309,7 @@
                     d = bbb.math.lerp(d0, d1, scroll_pos) + Math.sin(this.frame * 0.01) * 0.1;
                 var hw = 0.5 * this.size.width,
                     hh = 0.5 * this.size.height,
-                    h = Math.min(hw, hh),
+                    h = Math.min(hw, hh) * 0.95,
                     s = h / Math.max(1.0 + Math.abs(c), 1.0 + Math.abs(d));
 
                 // this.setStrokeColor(255, 255, 255, 32);
