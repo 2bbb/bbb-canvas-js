@@ -300,8 +300,8 @@
                 var a0 = 1.7, b0 = 1.7, c0 = 0.6, d0 = 1.2,
                     a1 = -1.7, b1 = 1.8, c1 = -1.9, d1 = -0.4;
                 var scroll_pos = bbb.math.clamp(this.scroll_pos * 3.0 - 1.0, 0.0, 1.0);
-                var a = bbb.math.lerp(a0, a1, scroll_pos) + 0.5 * this.mouse.x / this.size.width,
-                    b = bbb.math.lerp(b0, b1, scroll_pos) + 0.5 * this.mouse.y / this.size.height,
+                var a = bbb.math.lerp(a0, a1, scroll_pos) + 0.5 * this.ease_x / this.size.width,
+                    b = bbb.math.lerp(b0, b1, scroll_pos) + 0.5 * this.ease_y / this.size.height,
                     c = bbb.math.lerp(c0, c1, scroll_pos),
                     d = bbb.math.lerp(d0, d1, scroll_pos) + Math.sin(this.frame * 0.01) * 0.1;
                 var hw = 0.5 * this.size.width,
