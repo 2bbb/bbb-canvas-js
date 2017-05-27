@@ -45,16 +45,112 @@
 <body>
     <article id="main">
         <h1>bbb.canvas.js [<a href="https://github.com/2bbb/bbb-canvas-js">github</a>]</h1>
-        <section>
+        <section id="contents">
+            <select id="menu"></select>
             <code><pre id="code_example"></pre></code>
-            <script> for(var i = 0; i < 100; i++) document.write('<p>line ' + i + '</p>'); </script>
         </section>
+        <sction id="dummy_contents"></section>
     </article>
     <canvas id="canvas"></canvas>
     <script src="./libs/jquery-3.2.1.min.js"></script>
     <script src="./src/bbb.js"></script>
+    <script src="./src/bbb.math.js"></script>
     <script src="./src/bbb.noise.js"></script>
     <script src="./src/bbb.canvas.js"></script>
+    <script>
+        var drawTransformingNumber = (function() {
+            var num_path = [
+                [[0, 1], [0, 2], [1, 3], [2, 2], [2, 4], [3, 5], [4, 5]],
+                [[0, 0], [0, 0], [1, 3], [2, 2], [2, 2], [3, 5], [4, 4]],
+                [[0, 1], [0, 0], [1, 3], [2, 3], [2, 4], [3, 3], [4, 5]],
+                [[0, 1], [0, 0], [1, 3], [2, 3], [2, 2], [3, 5], [4, 5]],
+                [[0, 0], [0, 2], [1, 3], [2, 3], [2, 2], [3, 5], [4, 4]],
+                [[0, 1], [0, 2], [1, 1], [2, 3], [2, 2], [3, 5], [4, 5]],
+                [[0, 1], [0, 2], [1, 1], [2, 3], [2, 4], [3, 5], [4, 5]],
+                [[0, 1], [0, 2], [1, 3], [2, 2], [2, 2], [3, 5], [4, 4]],
+                [[0, 1], [0, 2], [1, 3], [2, 3], [2, 4], [3, 5], [4, 5]],
+                [[0, 1], [0, 2], [1, 3], [2, 3], [2, 2], [3, 5], [4, 5]],
+            ];
+            var getTransformableNumberPath = function(_, x, y, s) {
+                return num_path[_ % 10].map(function(n) {
+                    return {
+                        x0: x + (n[0] % 2) * s,
+                        y0: y + (n[0] >> 1) * s,
+                        x1: x + (n[1] % 2) * s,
+                        y1: y + (n[1] >> 1) * s,
+                    };
+                });
+            };
+            var drawTransformingNumber = function(context, m_, n_, trans, x, y, s, p, line_num) {
+                line_num = line_num || 10;
+                p = p || 0;
+                var p_2 = p * 0.5;
+                var q0 = 0.3;
+                var c = getTransformableNumberPath(m_, x, y, s), d = getTransformableNumberPath(n_, x, y, s);
+                var n = [];
+                for(var i = 0; i < d.length; i++) {
+                    n.push({
+                        x0: bbb.math.lerp(c[i].x0, d[i].x0, trans),
+                        y0: bbb.math.lerp(c[i].y0, d[i].y0, trans),
+                        x1: bbb.math.lerp(c[i].x1, d[i].x1, trans),
+                        y1: bbb.math.lerp(c[i].y1, d[i].y1, trans),
+                    });
+                }
+                context.beginPath();
+                for(var j = 0, length = n.length; j < length; j++) {
+                    if(n[j].x0 == n[j].x1 && n[j].y0 == n[j].y1) continue;
+                    var q = Math.sqrt((n[j].x0 - n[j].x1) * (n[j].x0 - n[j].x1) + (n[j].y0 - n[j].y1) * (n[j].y0 - n[j].y1)) / s * q0,
+                        q_2 = q * 0.5;
+                    for(var i = 0; i < line_num; i++) {
+                        context.moveTo(
+                            n[j].x0 + (Math.random() * p - p_2) * s,
+                            n[j].y0 + (Math.random() * p - p_2) * s
+                        );
+                        context.quadraticCurveTo(
+                            (n[j].x0 + n[j].x1) * 0.5 + (Math.random() * q - q_2) * s,
+                            (n[j].y0 + n[j].y1) * 0.5 + (Math.random() * q - q_2) * s,
+                            n[j].x1 + (Math.random() * p - p_2) * s,
+                            n[j].y1 + (Math.random() * p - p_2) * s
+                        );
+                    }
+                }
+                context.strokeStyle = '#fff';
+                context.stroke();
+            }
+            return drawTransformingNumber;
+        })();
+        function drawColon(context, x, y, size, perc, line_num) {
+            if(perc < 0.5) return;
+            context.beginPath();
+            for(var i = 0; i < line_num; i++) {
+                context.moveTo(x + size * 0.5 - Math.random() * 10, y + size * 0.5 - Math.random() * 10);
+                context.lineTo(x + size * 0.5 + Math.random() * 10, y + size * 0.5 + Math.random() * 10);
+                context.moveTo(x + size * 0.5 - Math.random() * 10, y + size * 0.5 + Math.random() * 10);
+                context.lineTo(x + size * 0.5 + Math.random() * 10, y + size * 0.5 - Math.random() * 10);
+
+                context.moveTo(x + size * 0.5 - Math.random() * 10, y + size * 1.5 - Math.random() * 10);
+                context.lineTo(x + size * 0.5 + Math.random() * 10, y + size * 1.5 + Math.random() * 10);
+                context.moveTo(x + size * 0.5 - Math.random() * 10, y + size * 1.5 + Math.random() * 10);
+                context.lineTo(x + size * 0.5 + Math.random() * 10, y + size * 1.5 - Math.random() * 10);
+            }
+            context.stroke();
+        } 
+        function drawDot(context, x, y, size, perc, line_num) {
+            if(perc < 0.5) return;
+            context.beginPath();
+            for(var i = 0; i < line_num; i++) {
+                context.moveTo(x + size * 0.8 - Math.random() * 10, y + size * 1.8 - Math.random() * 10);
+                context.lineTo(x + size * 0.8 + Math.random() * 10, y + size * 1.8 + Math.random() * 10);
+                context.moveTo(x + size * 0.8 - Math.random() * 10, y + size * 1.8 + Math.random() * 10);
+                context.lineTo(x + size * 0.8 + Math.random() * 10, y + size * 1.8 - Math.random() * 10);
+            }
+            context.stroke();
+        }
+        var drawString = {
+            ":": drawColon,
+            ".": drawDot,
+        };
+   </script>
     <script>
         var draws = [
             function f1(context) {
@@ -172,11 +268,87 @@
                     this.setFillColorHSV(this.frame % 400 * 0.0025, this.scroll_pos * 0.5, 0.5);
                     this.rect(x - s * w * 0.5, y - s * h * 0.5, s * w, s * h);
                 }, this);
-            }
-        ]
+            }, // f6
+            function draw_clock(context) {
+                this.clear();
+
+                var date = new Date(),
+                    hour = date.getHours(),
+                    min = date.getMinutes(),
+                    sec = date.getSeconds(),
+                    msec = date.getMilliseconds();
+                var last_time = [
+                    hour * 0.1 ^ 0, hour % 10,
+                    ":",
+                    min * 0.1 ^ 0, min % 10,
+                    ":",
+                    sec * 0.1 ^ 0, sec % 10,
+                    ".",
+                    (msec * 0.01) ^ 0, (msec * 0.1) ^ 0 % 10, msec % 10
+                ];
+
+                date = new Date(date.getTime() + 1000);
+                hour = date.getHours();
+                min = date.getMinutes();
+                sec = date.getSeconds();
+                var current_time = [
+                    hour * 0.1 ^ 0, hour % 10,
+                    ":",
+                    min * 0.1 ^ 0, min % 10,
+                    ":",
+                    sec * 0.1 ^ 0, sec % 10,
+                    ".",
+                    (msec * 0.01) ^ 0, (msec * 0.1) ^ 0 % 10, msec % 10
+                ];
+
+                var org_progress = msec * 0.001;
+
+                var progress = bbb.math.clamp(org_progress * 1.2 - 0.1, 0.0, 1.0);
+                var sined = Math.sin(progress * Math.PI - Math.PI * 0.5);
+                var transition = (sined < 0.0 ? -0.5 : 0.5) * Math.pow((sined * sined), 0.1) + 0.5;
+
+                var size = this.size.width / (last_time.length + 6);
+                var offset = 30;
+                var left = (this.size.width - ((size + offset) * last_time.length - offset)) * 0.5;
+                var line_num = this.scroll_pos * 10 + 1;
+
+                for(var i = 0; i < last_time.length; i++) {
+                    if(drawString[last_time[i]]) {
+                        drawString[last_time[i]](
+                            context,
+                            left + (size + offset) * i,
+                            this.size.height * 0.5 - size,
+                            size,
+                            progress,
+                            line_num
+                        )
+                    } else {
+                        drawTransformingNumber(
+                            context,
+                            last_time[i],
+                            current_time[i],
+                            transition,
+                            left + (size + offset) * i,
+                            this.size.height * 0.5 - size,
+                            size,
+                            1.0 - this.scroll_pos,
+                            line_num
+                        );
+                    }
+                }
+            }, // draw_clock
+        ];
         var hash = window.location.hash.replace('#', '');
-        var draw_index = Math.max(0, Math.min(draws.length - 1, ((hash == '') ? (draws.length - 1) : (0 ^ hash))));
+        var draw_index = bbb.math.clamp((hash == '') ? (draws.length - 1) : (0 ^ hash), 0, draws.length - 1);
         $(function() {
+            var fragments = [];
+            for(var i = 0; i < 100; i++) fragments.push('<p>dummy text ' + i + '</p>');
+            $("#dummy_contents").append(fragments.join(''));
+
+            for(var i = 0; i < draws.length; i++) {
+                $('select').append('<option' + ((i == draw_index) ? ' selected' : '') + ' value="' + i + '">' + draws[i].name + '</option>');
+            }
+
             bbb.noise.seed(Math.random());
             var renderer = new bbb.canvas.renderer(
                 document.getElementById('canvas'), {
@@ -221,7 +393,7 @@
                     draw: draws[draw_index],
                 }
             );
-            renderer.start();
+
             $('#menu').change(function() {
                 var index = 0 ^ $('#menu option:selected').val();
                 renderer.set_draw(draws[index], true);
@@ -229,12 +401,9 @@
                 $('#code_example').text(draws[index].toString());
             });
             $('#code_example').text(draws[draw_index].toString());
+
+            renderer.start();
         });
-        document.write('<select id="menu">');
-        for(var i = 0; i < draws.length; i++) {
-            document.write('<option' + ((i == draw_index) ? ' selected' : '') + ' value="' + i + '">' + draws[i].name + '</option>');
-        }
-        document.write('</select>');
     </script>
 </body>
 </html>
