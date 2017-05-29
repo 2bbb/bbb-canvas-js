@@ -89,7 +89,8 @@
                 p = p || 0;
                 var p_2 = p * 0.5;
                 var q0 = 0.3;
-                var c = getTransformableNumberPath(m_, x, y, s), d = getTransformableNumberPath(n_, x, y, s);
+                var c = getTransformableNumberPath(m_ ^ 0, x, y, s),
+                    d = getTransformableNumberPath(n_ ^ 0, x, y, s);
                 var n = [];
                 for(var i = 0; i < d.length; i++) {
                     n.push({
