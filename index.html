@@ -329,6 +329,28 @@
                     y = ny;
                 }
             }, //draw_clifford
+            function gradient(context) {
+                var gradient = this.gradient(0, 0, this.size.width, 0);
+                gradient.addColorStop(0.0, bbb.canvas.rgba(255, 0, 0, 128));
+                gradient.addColorStop(0.5 - 0.4 * this.scroll_pos, bbb.canvas.rgba(0, 255, 255, 128));
+                gradient.addColorStop(0.5, bbb.canvas.rgba(255, 255, 255, 128));
+                gradient.addColorStop(0.5 + 0.4 * this.scroll_pos, bbb.canvas.rgba(255, 255, 0, 128));
+                gradient.addColorStop(1.0, bbb.canvas.rgba(0, 0, 255, 128));
+                this.setStrokeGradient(gradient);
+                this.setFillGradient(gradient);
+                
+                this.clear();
+                this.beginPath();
+                this.gradient_rects.map(this.bind(function(rect) {
+                    rect.x = bbb.math.lerp(rect.x, rect.to_x, 0.005);
+                    rect.y = bbb.math.lerp(rect.y, rect.to_y, 0.005);
+                    if((rect.x - rect.to_x) * (rect.x - rect.to_x) + (rect.y - rect.to_y) * (rect.y - rect.to_y) < 100) {
+                        if(Math.random() < 0.5) rect.to_x = Math.random() * (this.size.width - rect.size);
+                        else rect.to_y = Math.random() * (this.size.height - rect.size);
+                    }
+                    this.rect(rect.x, rect.y, rect.size, rect.size);
+                }));
+            }, // gradient
         ];
         var hash = window.location.hash.replace('#', '');
         var draw_index = bbb.math.clamp((hash == '') ? (draws.length - 1) : (0 ^ hash), 0, draws.length - 1);
@@ -365,6 +387,7 @@
                         py: function(i) {
                             return (bbb.noise.perlin3(i * 0.03 + 2.0 * this.scroll_pos, Math.sin(i) * 0.1 + this.ease_y * 0.001, this.frame * 0.001) + 1) * this.size.height * 0.5
                         },
+                        gradient_rects: [],
                     },
                     setup: function(context) {
                         for(var i = 0; i < 1200; i++) {
@@ -372,6 +395,23 @@
                                 y = (bbb.noise.perlin3(i * 0.005, i * i * 0.005 - this.ease_y * 0.005, this.frame * 0.001) + 1) * this.size.height * 0.5;
                             this.points[i] = [x, y];
                         }
+                        this.bind(function() {
+                            var size = 64,
+                                w = this.size.width - size,
+                                h = this.size.height - size;
+                            for(var i = 0; i < 256; i++) {
+                                var r = Math.random(),
+                                    x = w * Math.random(),
+                                    y = h * Math.random();
+                                this.gradient_rects.push({
+                                    x: x,
+                                    y: y,
+                                    to_x: r < 0.5 ? x : w * Math.random(),
+                                    to_y: r < 0.5 ? h * Math.random() : y,
+                                    size: size
+                                });
+                            }
+                        })();
                     },
                     update: function(context) {
                         var p = 0.95;

@@ -189,6 +189,9 @@ bbb.canvas.renderer = (function() {
         },
         point: function(x, y) { this.context.fillRect(x - 0.5, y - 0.5, 1, 1); },
         points: function(pts) { for(var i = 0; i < pts.length; i++) this.context.fillRect(pts[i][0] - 0.5, pts[i][1] - 0.5, 1, 1); },
+        gradient: function(x, y, w, h) { return this.context.createLinearGradient(x, y, w, h); },
+        setStrokeGradient: function(grad) { this.context.strokeStyle = grad; },
+        setFillGradient: function(grad) { this.context.fillStyle = grad; },
     });
 
     return renderer;
