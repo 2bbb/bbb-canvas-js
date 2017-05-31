@@ -382,11 +382,11 @@
                 }));
             }, // gradient2
             function dokidoki_texts(context) {
-                context.font = (16 + 48 * this.scroll_pos * this.scroll_pos) + 'px sans-serif';
                 context.textAlign = 'center';
                 this.clear();
                 this.texts.map(this.bind(function(text) {
                     this.setFillColor(192, 192, 192, text.alpha);
+                    context.font = (16 + 48 * (this.scroll_pos + 0.2) * (this.scroll_pos + 0.2) * (Math.cos(this.frame * 0.1) + 1) * (Math.cos(this.frame * 0.1) + 1) * 0.25) + 'px sans-serif';
                     context.save();
                     context.translate(text.x, text.y);
                     context.rotate(Math.atan2(this.mouse.y - text.y, this.mouse.x - text.x) - Math.PI * 0.5);
