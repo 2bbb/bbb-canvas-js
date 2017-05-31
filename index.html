@@ -351,6 +351,36 @@
                     this.rect(rect.x, rect.y, rect.size, rect.size);
                 }));
             }, // gradient
+            function gradient2(context) {
+                this.clear();
+                this.gradient_rects.map(this.bind(function(rect) {
+                    this.beginPath();
+                    var rot = Math.atan2(
+                        this.mouse.y - rect.y - rect.size * 0.5,
+                        this.mouse.x - rect.x - rect.size * 0.5);
+                    var gradient = this.gradient(
+                        this.mouse.x,
+                        this.mouse.y,
+                        this.mouse.x - 0.5 * this.size.width * Math.cos(rot),
+                        this.mouse.y - 0.5 * this.size.height * Math.sin(rot)
+                    );
+                    gradient.addColorStop(0.0, bbb.canvas.rgba(255, 0, 0, 128));
+                    gradient.addColorStop(0.5 - 0.4 * this.scroll_pos, bbb.canvas.rgba(0, 255, 255, 128));
+                    gradient.addColorStop(0.5, bbb.canvas.rgba(255, 255, 255, 128));
+                    gradient.addColorStop(0.5 + 0.4 * this.scroll_pos, bbb.canvas.rgba(255, 255, 0, 128));
+                    gradient.addColorStop(1.0, bbb.canvas.rgba(0, 0, 255, 128));
+                    this.setStrokeGradient(gradient);
+                    this.setFillGradient(gradient);
+
+                    rect.x = bbb.math.lerp(rect.x, rect.to_x, 0.005);
+                    rect.y = bbb.math.lerp(rect.y, rect.to_y, 0.005);
+                    if((rect.x - rect.to_x) * (rect.x - rect.to_x) + (rect.y - rect.to_y) * (rect.y - rect.to_y) < 100) {
+                        if(Math.random() < 0.5) rect.to_x = Math.random() * (this.size.width - rect.size);
+                        else rect.to_y = Math.random() * (this.size.height - rect.size);
+                    }
+                    this.rect(rect.x, rect.y, rect.size, rect.size);
+                }));
+            }, // gradient2
         ];
         var hash = window.location.hash.replace('#', '');
         var draw_index = bbb.math.clamp((hash == '') ? (draws.length - 1) : (0 ^ hash), 0, draws.length - 1);
@@ -396,7 +426,7 @@
                             this.points[i] = [x, y];
                         }
                         this.bind(function() {
-                            var size = 64,
+                            var size = 32,
                                 w = this.size.width - size,
                                 h = this.size.height - size;
                             for(var i = 0; i < 256; i++) {
