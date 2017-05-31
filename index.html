@@ -381,6 +381,30 @@
                     this.rect(rect.x, rect.y, rect.size, rect.size);
                 }));
             }, // gradient2
+            function dokidoki_texts(context) {
+                context.font = (16 + 48 * this.scroll_pos * this.scroll_pos) + 'px sans-serif';
+                context.textAlign = 'center';
+                this.clear();
+                this.texts.map(this.bind(function(text) {
+                    this.setFillColor(192, 192, 192, text.alpha);
+                    context.save();
+                    context.translate(text.x, text.y);
+                    context.rotate(Math.atan2(this.mouse.y - text.y, this.mouse.x - text.x) - Math.PI * 0.5);
+                    context.fillText(text.text, 0, 0);
+                    context.restore();
+                    text.alpha = (text.alpha * text.speed) ^ 0;
+                }));
+                this.texts = this.texts.filter(function(t) { return 3 < t.alpha; });
+                while(this.texts.length < 128) {
+                    this.texts.push({
+                        text: Math.random() < 0.95 ? 'ドキ' : 'どき',
+                        alpha: 128 + ((Math.random() * 128) ^ 0),
+                        speed: Math.random() * 0.04 + 0.95,
+                        x: Math.random() * this.size.width,
+                        y: Math.random() * this.size.height,
+                    })
+                }
+            }, // dokidoki_texts
         ];
         var hash = window.location.hash.replace('#', '');
         var draw_index = bbb.math.clamp((hash == '') ? (draws.length - 1) : (0 ^ hash), 0, draws.length - 1);
@@ -418,6 +442,7 @@
                             return (bbb.noise.perlin3(i * 0.03 + 2.0 * this.scroll_pos, Math.sin(i) * 0.1 + this.ease_y * 0.001, this.frame * 0.001) + 1) * this.size.height * 0.5
                         },
                         gradient_rects: [],
+                        texts: [],
                     },
                     setup: function(context) {
                         for(var i = 0; i < 1200; i++) {
