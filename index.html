@@ -156,7 +156,7 @@
             ":": drawColon,
             ".": drawDot,
         };
-   </script>
+    </script>
     <script>
         var apps = [
             new bbb.canvas.app('circled_triangles', {
@@ -443,6 +443,57 @@
                     texts: [],
                 }
             }), // dokidoki_texts
+            new bbb.canvas.app('zoom', {
+                properties: {
+                    fragments: [],
+                    num: 160
+                },
+                setup: function(context, app, renderer) {
+                    var num = app.properties.num;
+                    // for(var i = 0; i < num; i++) {
+                    //     app.properties.fragments.push({
+                    //         zoom: (120 - i) / num,
+                    //         rotate: (120 - i) / num * Math.PI * 2
+                    //     });
+                    // }
+                },
+                update: function(context, app, renderer) {
+                    var num = app.properties.num;
+                    app.properties.fragments.forEach(function(frag) {
+                        frag.zoom += 0.016 * (renderer.scroll_pos + 1.0);
+                        frag.rotate += 0.05 * (renderer.scroll_pos + 1.0);
+                    });
+                    app.properties.fragments = app.properties.fragments.filter(function(frag) { return frag.zoom < 4.0; });
+                    if(app.properties.fragments.length < num) {
+                        app.properties.fragments.push({
+                            zoom: 0.025,
+                            rotate: 0.00
+                        });
+                    }
+                },
+                draw: function(context, app, renderer) {
+                    this.clear();
+                    context.save();
+                    context.translate(this.size.width * 0.5, this.size.height * 0.5);
+                    this.setFillColor(255, 255, 255, 24);
+                    this.setStrokeColor(255, 255, 255, 64);
+                    app.properties.fragments.forEach(this.bind(function(frag) {
+                        context.save();
+                        context.rotate(frag.rotate * frag.zoom / 3.0);
+                        context.scale(frag.zoom * 2, frag.zoom * 2);
+                        context.lineWidth = (0.5 / frag.zoom);
+                        context.beginPath();
+                        context.quadraticCurveTo(50, 50, 0, 100);
+                        context.quadraticCurveTo(-50, 150, 0, 200);
+                        context.quadraticCurveTo(100, 10, 0, 0);
+                        context.closePath();
+                        context.stroke();
+                        context.fill();
+                        context.restore();
+                    }));
+                    context.restore();
+                },
+            }),
         ];
         var hash = window.location.hash.replace('#', '');
         var selected_index = bbb.math.clamp((hash == '') ? (apps.length - 1) : (0 ^ hash), 0, apps.length - 1);
