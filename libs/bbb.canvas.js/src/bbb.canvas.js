@@ -248,12 +248,12 @@ bbb.canvas.app = (function() {
         opts = opts || {};
         bbb.extend(this, {
             name: name,
-            setup:      opts.setup      || function setup(context, props) {},
-            resize:     opts.resize     || function resize(context, props) {},
-            willStart:  opts.willStart  || function willStart(context, props) {},
-            update:     opts.update     || function update(context, props) {},
-            draw:       opts.draw       || function draw(context, props) {},
-            willFinish: opts.willFinish || function willFinish(context, props) {},
+            setup:      opts.setup      || function setup_isnt_given(context, app, renderer) {},
+            resize:     opts.resize     || function resize_isnt_given(context, app, renderer) {},
+            willStart:  opts.willStart  || function willStart_isnt_given(context, app, renderer) {},
+            update:     opts.update     || function update_isnt_given(context, app, renderer) {},
+            draw:       opts.draw       || function draw_isnt_given(context, app, renderer) {},
+            willFinish: opts.willFinish || function willFinish_isnt_given(context, app, renderer) {},
             properties: opts.properties || {},
             methods:    opts.methods    || {},
         });
@@ -264,6 +264,15 @@ bbb.canvas.app = (function() {
         addProperties: function(properties) { bbb.extend(this.properties, properties); return this; },
         addMethod: function(key, method) { this.methods[key] = method; return this; },
         addProperties: function(methods) { bbb.extend(this.methods, methods); return this; },
+        toString: function() {
+            return [
+                '// setup',
+                this.setup.toString(),
+                '// update', 
+                this.update.toString(),
+                '// draw',
+                this.draw.toString()].join('\n\n');
+        }
     });
 
     return app;

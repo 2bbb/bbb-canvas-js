@@ -499,10 +499,10 @@
                 var index = 0 ^ $('#menu option:selected').val();
                 renderer.selectApp(apps[index].name);
                 window.location.hash = index;
-                $('#code_example').text(apps[index].draw.toString());
+                $('#code_example').text(apps[index].toString());
                 $('pre code').each(function(i, block) { hljs.highlightBlock(block); });
             });
-            $('#code_example').text(apps[selected_index].draw.toString());
+            $('#code_example').text(apps[selected_index].toString());
             $('pre code').each(function(i, block) { hljs.highlightBlock(block); });
 
             renderer.selectApp(apps[selected_index].name);
