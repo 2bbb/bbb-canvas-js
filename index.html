@@ -460,7 +460,7 @@
                 update: function(context, app, renderer) {
                     var num = app.properties.num;
                     app.properties.fragments.forEach(function(frag) {
-                        frag.zoom += 0.016 * (renderer.scroll_pos + 1.0);
+                        frag.zoom += 0.012 * (renderer.scroll_pos + 1.0);
                         frag.rotate += 0.05 * (renderer.scroll_pos + 1.0);
                     });
                     app.properties.fragments = app.properties.fragments.filter(function(frag) { return frag.zoom < 4.0; });
@@ -479,7 +479,7 @@
                     this.setStrokeColor(255, 255, 255, 64);
                     app.properties.fragments.forEach(this.bind(function(frag) {
                         context.save();
-                        context.rotate(frag.rotate * frag.zoom / 3.0);
+                        context.rotate(frag.rotate * frag.zoom / 3.0 + this.frame * 0.01);
                         context.scale(frag.zoom * 2, frag.zoom * 2);
                         context.lineWidth = (0.5 / frag.zoom);
                         context.beginPath();
