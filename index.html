@@ -158,212 +158,206 @@
         };
    </script>
     <script>
-        var draws = [
-            function draw_circled_triangles(context) {
-                this.rect(0, 0, this.size.width, this.size.height);
-                this.clear();
-                for(var i = 0; i < 10; i++) {
-                    var s = Math.min(this.size.width, this.size.height) * 0.16 * (1.5 + Math.sin(this.frame * 0.001));
-                    var sx = Math.cos(Math.PI * 0.25 + this.frame * 0.01) * s,
-                        sy = Math.sin(Math.PI * 0.25 + this.frame * 0.01) * s,
-                        ex = Math.cos(Math.PI * 0.75 + this.frame * 0.011) * s,
-                        ey = Math.sin(Math.PI * 0.75 + this.frame * 0.011) * s,
-                        cx = this.center.x,
-                        cy = this.center.y;
-                    this.setStrokeColor(255, 255, 255, 127);
-                    for(var i = 1; i <= 20; i++) {
-                        this.beginPath();
-                        this.setFillColor(255, 255, 255, 32);
-                        var d = (Math.random() - 0.5) * this.scroll_pos,
-                            x = Math.cos(this.frame * 0.003 * i) * s * (1.5 + Math.cos(this.frame * 0.01 + d)),
-                            y = Math.sin(this.frame * 0.003 * i) * s * (1.5 + Math.cos(this.frame * 0.01 + d));
-                        this.lineTo(cx + sx, cy + sy);
-                        this.lineTo(cx + x, cy + y);
-                        this.lineTo(cx + ex, cy + ey);
-                        this.closePath();
-                        this.fill();
-                        this.stroke();
+        var apps = [
+            new bbb.canvas.app('circled_triangles', {
+                draw: function(context) {
+                    this.rect(0, 0, this.size.width, this.size.height);
+                    this.clear();
+                    for(var i = 0; i < 10; i++) {
+                        var s = Math.min(this.size.width, this.size.height) * 0.16 * (1.5 + Math.sin(this.frame * 0.001));
+                        var sx = Math.cos(Math.PI * 0.25 + this.frame * 0.01) * s,
+                            sy = Math.sin(Math.PI * 0.25 + this.frame * 0.01) * s,
+                            ex = Math.cos(Math.PI * 0.75 + this.frame * 0.011) * s,
+                            ey = Math.sin(Math.PI * 0.75 + this.frame * 0.011) * s,
+                            cx = this.center.x,
+                            cy = this.center.y;
+                        this.setStrokeColor(255, 255, 255, 127);
+                        for(var i = 1; i <= 20; i++) {
+                            this.beginPath();
+                            this.setFillColor(255, 255, 255, 32);
+                            var d = (Math.random() - 0.5) * this.scroll_pos,
+                                x = Math.cos(this.frame * 0.003 * i) * s * (1.5 + Math.cos(this.frame * 0.01 + d)),
+                                y = Math.sin(this.frame * 0.003 * i) * s * (1.5 + Math.cos(this.frame * 0.01 + d));
+                            this.lineTo(cx + sx, cy + sy);
+                            this.lineTo(cx + x, cy + y);
+                            this.lineTo(cx + ex, cy + ey);
+                            this.closePath();
+                            this.fill();
+                            this.stroke();
+                        }
                     }
                 }
-            }, // draw_circled_triangles
-            function draw_perlin_particles(context) {
-                this.setFillColor(0, 0, 0, 32);
-                this.rect(0, 0, this.size.width, this.size.height);
-
-                // this.context.lineWidth = 0.3;
-                var color_flick = 127 * this.scroll_pos;
-                this.beginPath();
-                for(var i = 0; i < 1200; i++) {
-                    var gray = 255 - Math.random() * color_flick;
-                    this.setStrokeColor(gray, gray, gray, 128);
-                    var x = this.px(i),
-                        y = this.py(i);
-                    if(i < 200 + 1000 * this.scroll_pos) this.line(this.points[i][0], this.points[i][1], x, y);
-                    // this.point(x, y);
-                    this.points[i][0] = x;
-                    this.points[i][1] = y;
-                }
-                this.stroke();
-            }, // draw_perlin_particles
-            function draw_perlin_rects(context) {
-                this.clear();
-                // this.setFillColor(0, 0, 0, 10);
-                // this.rect(0, 0, this.size.width, this.size.height);
-                this.setStrokeColor(255, 255, 255);
-                // this.indecies.forEach(function(index) {
-                //     this.point((bbb.noise.perlin3(index[0] * 0.01, index[1] * 0.01, this.frame * 0.01) + 1.0) * this.size.width * 0.5,
-                //                (bbb.noise.perlin3(index[0] * 0.01, index[1] * 0.01, 1.0 + this.frame * 0.01) + 1.0) * this.size.height * 0.5);
-                // }, this);
-                var num = Math.pow(2, this.scroll_pos * 6) ^ 0;
-                var w = this.size.width / num,
-                    h = this.size.height / num;
-                var ps = Math.cos(Math.PI * 0.5 * bbb.noise.perlin2(this.scroll_pos, this.frame * 0.01));
-                var len2 = this.size.width * this.size.width + this.size.height * this.size.height;
-                for(var i = 0; i < num; i++) for(var j = 0; j < num; j++) {
-                    var s = ps * (bbb.noise.perlin3(i / num, j / num + this.scroll_pos, this.frame * 0.01) + 1.0) * 0.5;
-                    var x = (i + 0.5) * w, y = (j + 0.5) * h;
-                    var dx = x - this.mouse.x, dy = y - this.mouse.y;
-                    var d = Math.max(0.0, ((dx * dx + dy * dy) / len2 * 1.5));
-                    s *= Math.pow(Math.sin(Math.PI * 0.5 * d), 0.11432);
-                    // this.setStrokeColor(s * 128, s * 128, s * 128);
-                    // this.strokeRect(x - s * w * 0.5, y - s * h * 0.5, s * w, s * h);
-                    this.setFillColorHSV(this.frame % 400 * 0.0025, this.scroll_pos * 0.5, 0.5);
-                    this.rect(x - s * w * 0.5, y - s * h * 0.5, s * w, s * h);
-                }
-            }, // draw_perlin_rects
-            function draw_clock(context) {
-                this.clear();
-
-                var date = new Date(),
-                    hour = date.getHours(),
-                    min = date.getMinutes(),
-                    sec = date.getSeconds(),
-                    msec = date.getMilliseconds();
-                var last_time = [
-                    hour * 0.1 ^ 0, hour % 10,
-                    ":",
-                    min * 0.1 ^ 0, min % 10,
-                    ":",
-                    sec * 0.1 ^ 0, sec % 10,
-                    ".",
-                    (msec * 0.01) ^ 0, (msec * 0.1) ^ 0 % 10, msec % 10
-                ];
-
-                date = new Date(date.getTime() + 1000);
-                hour = date.getHours();
-                min = date.getMinutes();
-                sec = date.getSeconds();
-                var current_time = [
-                    hour * 0.1 ^ 0, hour % 10,
-                    ":",
-                    min * 0.1 ^ 0, min % 10,
-                    ":",
-                    sec * 0.1 ^ 0, sec % 10,
-                    ".",
-                    (msec * 0.01) ^ 0, (msec * 0.1) ^ 0 % 10, msec % 10
-                ];
-
-                var org_progress = msec * 0.001;
-
-                var progress = bbb.math.clamp(org_progress * 1.2 - 0.1, 0.0, 1.0);
-                var sined = Math.sin(progress * Math.PI - Math.PI * 0.5);
-                var transition = (sined < 0.0 ? -0.5 : 0.5) * Math.pow((sined * sined), 0.1) + 0.5;
-
-                var size = this.size.width / (last_time.length + 6);
-                var offset = 30;
-                var left = (this.size.width - ((size + offset) * last_time.length - offset)) * 0.5;
-                var line_num = this.scroll_pos * 10 + 1;
-
-                for(var i = 0; i < last_time.length; i++) {
-                    if(drawString[last_time[i]]) {
-                        drawString[last_time[i]](
-                            context,
-                            left + (size + offset) * i,
-                            this.size.height * 0.5 - size,
-                            size,
-                            progress,
-                            line_num
-                        )
-                    } else {
-                        drawTransformingNumber(
-                            context,
-                            last_time[i],
-                            current_time[i],
-                            transition,
-                            left + (size + offset) * i,
-                            this.size.height * 0.5 - size,
-                            size,
-                            1.0 - this.scroll_pos,
-                            line_num
-                        );
+            }), // circled_triangles
+            new bbb.canvas.app('perlin_particles', {
+                properties: {
+                    points: [],
+                },
+                methods: {
+                    px: function(i) {
+                        return (bbb.noise.perlin3(i * 0.03, Math.cos(i) * 0.1 + this.ease_x * 0.001, this.frame * 0.001) + 1) * this.size.width * 0.5;
+                    },
+                    py: function(i) {
+                        return (bbb.noise.perlin3(i * 0.03 + 2.0 * this.scroll_pos, Math.sin(i) * 0.1 + this.ease_y * 0.001, this.frame * 0.001) + 1) * this.size.height * 0.5
+                    },
+                },
+                setup: function(context, app) {
+                    var props = app.properties;
+                    for(var i = 0; i < 1200; i++) {
+                        var x = (bbb.noise.perlin3(i * 0.005, i * 0.005 + this.ease_x * 0.005, this.frame * 0.001) + 1) * this.size.width * 0.5,
+                            y = (bbb.noise.perlin3(i * 0.005, i * i * 0.005 - this.ease_y * 0.005, this.frame * 0.001) + 1) * this.size.height * 0.5;
+                        props.points[i] = [x, y];
                     }
-                }
-            }, // draw_clock
-            function draw_clifford(context) {
-                this.clear();
-                var x = this.frame * 0.01, y = 0.0;
-                var nx, ny;
-                var a0 = 1.7, b0 = 1.7, c0 = 0.6, d0 = 1.2,
-                    a1 = -1.7, b1 = 1.8, c1 = -1.9, d1 = -0.4;
-                var scroll_pos = bbb.math.clamp(this.scroll_pos * 3.0 - 1.0, 0.0, 1.0);
-                var a = bbb.math.lerp(a0, a1, scroll_pos) + 0.5 * this.ease_x / this.size.width,
-                    b = bbb.math.lerp(b0, b1, scroll_pos) + 0.5 * this.ease_y / this.size.height,
-                    c = bbb.math.lerp(c0, c1, scroll_pos),
-                    d = bbb.math.lerp(d0, d1, scroll_pos) + Math.sin(this.frame * 0.01) * 0.1;
-                var hw = 0.5 * this.size.width,
-                    hh = 0.5 * this.size.height,
-                    h = Math.min(hw, hh) * 0.95,
-                    s = h / Math.max(1.0 + Math.abs(c), 1.0 + Math.abs(d));
+                },
+                draw: function(context, app) {
+                    var props = app.properties,
+                        meth  = app.methods;
 
-                // this.setStrokeColor(255, 255, 255, 32);
-                this.setFillColor(bbb.math.lerp(80, 255, scroll_pos),
-                                  bbb.math.lerp(255, 80, scroll_pos),
-                                  bbb.math.lerp(255, 80, scroll_pos), 222);
-                this.beginPath();
+                    this.setFillColor(0, 0, 0, 32);
+                    this.rect(0, 0, this.size.width, this.size.height);
 
-                for(var i = 0; i < 6400; i++) {
-                    nx = Math.sin(a * y) + c * Math.cos(a * x);
-                    ny = Math.sin(b * x) + d * Math.cos(b * y);
-                    this.rect(hw + s * nx - 0.75, hh + s * ny - 0.75, 1.5, 1.5);
-                    x = nx;
-                    y = ny;
-                }
-            }, //draw_clifford
-            function gradient(context) {
-                var gradient = this.gradient(0, 0, this.size.width, 0);
-                gradient.addColorStop(0.0, bbb.canvas.rgba(255, 0, 0, 128));
-                gradient.addColorStop(0.5 - 0.4 * this.scroll_pos, bbb.canvas.rgba(0, 255, 255, 128));
-                gradient.addColorStop(0.5, bbb.canvas.rgba(255, 255, 255, 128));
-                gradient.addColorStop(0.5 + 0.4 * this.scroll_pos, bbb.canvas.rgba(255, 255, 0, 128));
-                gradient.addColorStop(1.0, bbb.canvas.rgba(0, 0, 255, 128));
-                this.setStrokeGradient(gradient);
-                this.setFillGradient(gradient);
-                
-                this.clear();
-                this.beginPath();
-                this.gradient_rects.map(this.bind(function(rect) {
-                    rect.x = bbb.math.lerp(rect.x, rect.to_x, 0.005);
-                    rect.y = bbb.math.lerp(rect.y, rect.to_y, 0.005);
-                    if((rect.x - rect.to_x) * (rect.x - rect.to_x) + (rect.y - rect.to_y) * (rect.y - rect.to_y) < 100) {
-                        if(Math.random() < 0.5) rect.to_x = Math.random() * (this.size.width - rect.size);
-                        else rect.to_y = Math.random() * (this.size.height - rect.size);
-                    }
-                    this.rect(rect.x, rect.y, rect.size, rect.size);
-                }));
-            }, // gradient
-            function gradient2(context) {
-                this.clear();
-                this.gradient_rects.map(this.bind(function(rect) {
+                    // this.context.lineWidth = 0.3;
+                    var color_flick = 127 * this.scroll_pos;
                     this.beginPath();
-                    var rot = Math.atan2(
-                        this.mouse.y - rect.y - rect.size * 0.5,
-                        this.mouse.x - rect.x - rect.size * 0.5);
-                    var gradient = this.gradient(
-                        this.mouse.x,
-                        this.mouse.y,
-                        this.mouse.x - 0.5 * this.size.width * Math.cos(rot),
-                        this.mouse.y - 0.5 * this.size.height * Math.sin(rot)
-                    );
+                    for(var i = 0; i < 1200; i++) {
+                        var gray = 255 - Math.random() * color_flick;
+                        this.setStrokeColor(gray, gray, gray, 128);
+                        var x = meth.px(i),
+                            y = meth.py(i);
+                        if(i < 200 + 1000 * this.scroll_pos) this.line(props.points[i][0], props.points[i][1], x, y);
+                        props.points[i][0] = x;
+                        props.points[i][1] = y;
+                    }
+                    this.stroke();
+                },
+                willStart: function() { this.clear(); },
+            }), // perlin_particles
+            new bbb.canvas.app('draw_perlin_rects', {
+                draw: function(context, app) {
+                    this.clear();
+                    this.setStrokeColor(255, 255, 255);
+                    var num = Math.pow(2, this.scroll_pos * 6) ^ 0;
+                    var w = this.size.width / num,
+                        h = this.size.height / num;
+                    var ps = Math.cos(Math.PI * 0.5 * bbb.noise.perlin2(this.scroll_pos, this.frame * 0.01));
+                    var len2 = this.size.width * this.size.width + this.size.height * this.size.height;
+                    for(var i = 0; i < num; i++) for(var j = 0; j < num; j++) {
+                        var s = ps * (bbb.noise.perlin3(i / num, j / num + this.scroll_pos, this.frame * 0.01) + 1.0) * 0.5;
+                        var x = (i + 0.5) * w, y = (j + 0.5) * h;
+                        var dx = x - this.mouse.x, dy = y - this.mouse.y;
+                        var d = Math.max(0.0, ((dx * dx + dy * dy) / len2 * 1.5));
+                        s *= Math.pow(Math.sin(Math.PI * 0.5 * d), 0.11432);
+                        // this.setStrokeColor(s * 128, s * 128, s * 128);
+                        // this.strokeRect(x - s * w * 0.5, y - s * h * 0.5, s * w, s * h);
+                        this.setFillColorHSV(this.frame % 400 * 0.0025, this.scroll_pos * 0.5, 0.5);
+                        this.rect(x - s * w * 0.5, y - s * h * 0.5, s * w, s * h);
+                    }
+                }
+            }), // draw_perlin_rects
+            new bbb.canvas.app('draw_clock', {
+                draw: function(context) {
+                    this.clear();
+
+                    var date = new Date(),
+                        hour = date.getHours(),
+                        min = date.getMinutes(),
+                        sec = date.getSeconds(),
+                        msec = date.getMilliseconds();
+                    var last_time = [
+                        hour * 0.1 ^ 0, hour % 10,
+                        ":",
+                        min * 0.1 ^ 0, min % 10,
+                        ":",
+                        sec * 0.1 ^ 0, sec % 10,
+                        ".",
+                        (msec * 0.01) ^ 0, (msec * 0.1) ^ 0 % 10, msec % 10
+                    ];
+
+                    date = new Date(date.getTime() + 1000);
+                    hour = date.getHours();
+                    min = date.getMinutes();
+                    sec = date.getSeconds();
+                    var current_time = [
+                        hour * 0.1 ^ 0, hour % 10,
+                        ":",
+                        min * 0.1 ^ 0, min % 10,
+                        ":",
+                        sec * 0.1 ^ 0, sec % 10,
+                        ".",
+                        (msec * 0.01) ^ 0, (msec * 0.1) ^ 0 % 10, msec % 10
+                    ];
+
+                    var org_progress = msec * 0.001;
+
+                    var progress = bbb.math.clamp(org_progress * 1.2 - 0.1, 0.0, 1.0);
+                    var sined = Math.sin(progress * Math.PI - Math.PI * 0.5);
+                    var transition = (sined < 0.0 ? -0.5 : 0.5) * Math.pow((sined * sined), 0.1) + 0.5;
+
+                    var size = this.size.width / (last_time.length + 6);
+                    var offset = 30;
+                    var left = (this.size.width - ((size + offset) * last_time.length - offset)) * 0.5;
+                    var line_num = this.scroll_pos * 10 + 1;
+
+                    for(var i = 0; i < last_time.length; i++) {
+                        if(drawString[last_time[i]]) {
+                            drawString[last_time[i]](
+                                context,
+                                left + (size + offset) * i,
+                                this.size.height * 0.5 - size,
+                                size,
+                                progress,
+                                line_num
+                            )
+                        } else {
+                            drawTransformingNumber(
+                                context,
+                                last_time[i],
+                                current_time[i],
+                                transition,
+                                left + (size + offset) * i,
+                                this.size.height * 0.5 - size,
+                                size,
+                                1.0 - this.scroll_pos,
+                                line_num
+                            );
+                        }
+                    }
+                }
+            }), // draw_clock
+            new bbb.canvas.app('draw_clifford', {
+                draw: function(context) {
+                    this.clear();
+                    var x = this.frame * 0.01, y = 0.0;
+                    var nx, ny;
+                    var a0 = 1.7, b0 = 1.7, c0 = 0.6, d0 = 1.2,
+                        a1 = -1.7, b1 = 1.8, c1 = -1.9, d1 = -0.4;
+                    var scroll_pos = bbb.math.clamp(this.scroll_pos * 3.0 - 1.0, 0.0, 1.0);
+                    var a = bbb.math.lerp(a0, a1, scroll_pos) + 0.5 * this.ease_x / this.size.width,
+                        b = bbb.math.lerp(b0, b1, scroll_pos) + 0.5 * this.ease_y / this.size.height,
+                        c = bbb.math.lerp(c0, c1, scroll_pos),
+                        d = bbb.math.lerp(d0, d1, scroll_pos) + Math.sin(this.frame * 0.01) * 0.1;
+                    var hw = 0.5 * this.size.width,
+                        hh = 0.5 * this.size.height,
+                        h = Math.min(hw, hh) * 0.95,
+                        s = h / Math.max(1.0 + Math.abs(c), 1.0 + Math.abs(d));
+
+                    // this.setStrokeColor(255, 255, 255, 32);
+                    this.setFillColor(bbb.math.lerp(80, 255, scroll_pos),
+                                    bbb.math.lerp(255, 80, scroll_pos),
+                                    bbb.math.lerp(255, 80, scroll_pos), 222);
+                    this.beginPath();
+
+                    for(var i = 0; i < 6400; i++) {
+                        nx = Math.sin(a * y) + c * Math.cos(a * x);
+                        ny = Math.sin(b * x) + d * Math.cos(b * y);
+                        this.rect(hw + s * nx - 0.75, hh + s * ny - 0.75, 1.5, 1.5);
+                        x = nx;
+                        y = ny;
+                    }
+                }
+            }), //draw_clifford
+            new bbb.canvas.app('gradient', {
+                draw: function(context) {
+                    var gradient = this.gradient(0, 0, this.size.width, 0);
                     gradient.addColorStop(0.0, bbb.canvas.rgba(255, 0, 0, 128));
                     gradient.addColorStop(0.5 - 0.4 * this.scroll_pos, bbb.canvas.rgba(0, 255, 255, 128));
                     gradient.addColorStop(0.5, bbb.canvas.rgba(255, 255, 255, 128));
@@ -371,87 +365,107 @@
                     gradient.addColorStop(1.0, bbb.canvas.rgba(0, 0, 255, 128));
                     this.setStrokeGradient(gradient);
                     this.setFillGradient(gradient);
-
-                    rect.x = bbb.math.lerp(rect.x, rect.to_x, 0.005);
-                    rect.y = bbb.math.lerp(rect.y, rect.to_y, 0.005);
-                    if((rect.x - rect.to_x) * (rect.x - rect.to_x) + (rect.y - rect.to_y) * (rect.y - rect.to_y) < 100) {
-                        if(Math.random() < 0.5) rect.to_x = Math.random() * (this.size.width - rect.size);
-                        else rect.to_y = Math.random() * (this.size.height - rect.size);
-                    }
-                    this.rect(rect.x, rect.y, rect.size, rect.size);
-                }));
-            }, // gradient2
-            function dokidoki_texts(context) {
-                context.textAlign = 'center';
-                this.clear();
-                var p = (Math.cos(this.frame * 0.1) + 1) * (Math.cos(this.frame * 0.1) + 1);
-                var pc = 64 * this.scroll_pos * this.scroll_pos * p * 0.25;
-                context.font = (16 + 48 * (this.scroll_pos + 0.2) * (this.scroll_pos + 0.2) * p * 0.25) + 'px sans-serif';
-                this.texts.map(this.bind(function(text) {
-                    this.setFillColor(192 + pc, 192 - pc, 192 - pc, text.alpha);
-                    context.save();
-                    context.translate(text.x, text.y);
-                    context.rotate(Math.atan2(this.mouse.y - text.y, this.mouse.x - text.x) - Math.PI * 0.5);
-                    context.fillText(text.text, 0, 0);
-                    context.restore();
-                    text.alpha = (text.alpha * text.speed) ^ 0;
-                }));
-                this.texts = this.texts.filter(function(t) { return 3 < t.alpha; });
-                while(this.texts.length < 128) {
-                    this.texts.push({
-                        text: Math.random() < 0.95 ? 'ドキ' : 'どき',
-                        alpha: 128 + ((Math.random() * 128) ^ 0),
-                        speed: Math.random() * 0.04 + 0.95,
-                        x: Math.random() * this.size.width,
-                        y: Math.random() * this.size.height,
-                    })
+                    
+                    this.clear();
+                    this.beginPath();
+                    this.gradient_rects.map(this.bind(function(rect) {
+                        rect.x = bbb.math.lerp(rect.x, rect.to_x, 0.005);
+                        rect.y = bbb.math.lerp(rect.y, rect.to_y, 0.005);
+                        if((rect.x - rect.to_x) * (rect.x - rect.to_x) + (rect.y - rect.to_y) * (rect.y - rect.to_y) < 100) {
+                            if(Math.random() < 0.5) rect.to_x = Math.random() * (this.size.width - rect.size);
+                            else rect.to_y = Math.random() * (this.size.height - rect.size);
+                        }
+                        this.rect(rect.x, rect.y, rect.size, rect.size);
+                    }));
                 }
-            }, // dokidoki_texts
+            }), // gradient
+            new bbb.canvas.app('gradient2', {
+                draw: function(context) {
+                    this.clear();
+                    this.gradient_rects.map(this.bind(function(rect) {
+                        this.beginPath();
+                        var rot = Math.atan2(
+                            this.mouse.y - rect.y - rect.size * 0.5,
+                            this.mouse.x - rect.x - rect.size * 0.5);
+                        var gradient = this.gradient(
+                            this.mouse.x,
+                            this.mouse.y,
+                            this.mouse.x - 0.5 * this.size.width * Math.cos(rot),
+                            this.mouse.y - 0.5 * this.size.height * Math.sin(rot)
+                        );
+                        gradient.addColorStop(0.0, bbb.canvas.rgba(255, 0, 0, 128));
+                        gradient.addColorStop(0.5 - 0.4 * this.scroll_pos, bbb.canvas.rgba(0, 255, 255, 128));
+                        gradient.addColorStop(0.5, bbb.canvas.rgba(255, 255, 255, 128));
+                        gradient.addColorStop(0.5 + 0.4 * this.scroll_pos, bbb.canvas.rgba(255, 255, 0, 128));
+                        gradient.addColorStop(1.0, bbb.canvas.rgba(0, 0, 255, 128));
+                        this.setStrokeGradient(gradient);
+                        this.setFillGradient(gradient);
+
+                        rect.x = bbb.math.lerp(rect.x, rect.to_x, 0.005);
+                        rect.y = bbb.math.lerp(rect.y, rect.to_y, 0.005);
+                        if((rect.x - rect.to_x) * (rect.x - rect.to_x) + (rect.y - rect.to_y) * (rect.y - rect.to_y) < 100) {
+                            if(Math.random() < 0.5) rect.to_x = Math.random() * (this.size.width - rect.size);
+                            else rect.to_y = Math.random() * (this.size.height - rect.size);
+                        }
+                        this.rect(rect.x, rect.y, rect.size, rect.size);
+                    }));
+                }
+            }), // gradient2
+            new bbb.canvas.app('dokidoki_texts', {
+                draw: function(context, app, renderer) {
+                    var props = app.properties;
+                    context.textAlign = 'center';
+                    this.clear();
+                    var p = (Math.cos(this.frame * 0.1) + 1) * (Math.cos(this.frame * 0.1) + 1);
+                    var pc = 64 * this.scroll_pos * this.scroll_pos * p * 0.25;
+                    context.font = (16 + 48 * (this.scroll_pos + 0.2) * (this.scroll_pos + 0.2) * p * 0.25) + 'px sans-serif';
+                    props.texts.map(this.bind(function(text) {
+                        this.setFillColor(192 + pc, 192 - pc, 192 - pc, text.alpha);
+                        context.save();
+                        context.translate(text.x, text.y);
+                        context.rotate(Math.atan2(this.mouse.y - text.y, this.mouse.x - text.x) - Math.PI * 0.5);
+                        context.fillText(text.text, 0, 0);
+                        context.restore();
+                        text.alpha = (text.alpha * text.speed) ^ 0;
+                    }));
+                    props.texts = props.texts.filter(function(t) { return 3 < t.alpha; });
+                    while(props.texts.length < 128) {
+                        props.texts.push({
+                            text: Math.random() < 0.95 ? 'ドキ' : 'どき',
+                            alpha: 128 + ((Math.random() * 128) ^ 0),
+                            speed: Math.random() * 0.04 + 0.95,
+                            x: Math.random() * this.size.width,
+                            y: Math.random() * this.size.height,
+                        })
+                    }
+                },
+                properties: {
+                    texts: [],
+                }
+            }), // dokidoki_texts
         ];
         var hash = window.location.hash.replace('#', '');
-        var draw_index = bbb.math.clamp((hash == '') ? (draws.length - 1) : (0 ^ hash), 0, draws.length - 1);
+        var selected_index = bbb.math.clamp((hash == '') ? (apps.length - 1) : (0 ^ hash), 0, apps.length - 1);
         $(function() {
             var fragments = [];
             for(var i = 0; i < 100; i++) fragments.push('<p>dummy text ' + i + '</p>');
             $("#dummy_contents").append(fragments.join(''));
 
-            for(var i = 0; i < draws.length; i++) {
-                $('select').append('<option' + ((i == draw_index) ? ' selected' : '') + ' value="' + i + '">' + draws[i].name + '</option>');
+            for(var i = 0; i < apps.length; i++) {
+                $('select').append('<option' + ((i == selected_index) ? ' selected' : '') + ' value="' + i + '">' + apps[i].name + '</option>');
             }
 
             bbb.noise.seed(Math.random());
             var renderer = new bbb.canvas.renderer(
-                document.getElementById('canvas'), {
+                document.getElementById('canvas'),
+                apps,
+                {
                     properties: {
-                        indecies: (function(grid_size) {
-                            grid_size = grid_size || 64;
-                            var arr = [];
-                            for(var i = 0; i < grid_size; i++) {
-                                for(var j = 0; j < grid_size; j++) {
-                                    arr.push([i, j]);
-                                }
-                            }
-                            return arr;
-                        })(64),
-                        grid_size: 64,
                         ease_x: 0.0,
                         ease_y: 0.0,
-                        points: [],
-                        px: function(i) {
-                            return (bbb.noise.perlin3(i * 0.03, Math.cos(i) * 0.1 + this.ease_x * 0.001, this.frame * 0.001) + 1) * this.size.width * 0.5;
-                        },
-                        py: function(i) {
-                            return (bbb.noise.perlin3(i * 0.03 + 2.0 * this.scroll_pos, Math.sin(i) * 0.1 + this.ease_y * 0.001, this.frame * 0.001) + 1) * this.size.height * 0.5
-                        },
                         gradient_rects: [],
-                        texts: [],
                     },
                     setup: function(context) {
-                        for(var i = 0; i < 1200; i++) {
-                            var x = (bbb.noise.perlin3(i * 0.005, i * 0.005 + this.ease_x * 0.005, this.frame * 0.001) + 1) * this.size.width * 0.5,
-                                y = (bbb.noise.perlin3(i * 0.005, i * i * 0.005 - this.ease_y * 0.005, this.frame * 0.001) + 1) * this.size.height * 0.5;
-                            this.points[i] = [x, y];
-                        }
                         this.bind(function() {
                             var size = 32,
                                 w = this.size.width - size,
@@ -478,20 +492,20 @@
                         }
                         this.ease_x = this.ease_x * p + this.mouse.x * (1.0 - p);
                         this.ease_y = this.ease_y * p + this.mouse.y * (1.0 - p);
-                    },
-                    draw: draws[draw_index],
+                    }
                 }
             );
-
             $('#menu').change(function() {
                 var index = 0 ^ $('#menu option:selected').val();
-                renderer.set_draw(draws[index], true);
+                renderer.selectApp(apps[index].name);
                 window.location.hash = index;
-                $('#code_example').text(draws[index].toString());
+                $('#code_example').text(apps[index].draw.toString());
                 $('pre code').each(function(i, block) { hljs.highlightBlock(block); });
             });
-            $('#code_example').text(draws[draw_index].toString());
+            $('#code_example').text(apps[selected_index].draw.toString());
             $('pre code').each(function(i, block) { hljs.highlightBlock(block); });
+
+            renderer.selectApp(apps[selected_index].name);
             renderer.start();
         });
     </script>
