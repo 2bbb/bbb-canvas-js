@@ -164,6 +164,10 @@ bbb.canvas.renderer = (function() {
         clear: function() { this.context.clearRect(0, 0, this.size.width, this.size.height); },
         beginPath: function() { this.context.beginPath(); },
         closePath: function() { this.context.closePath(); },
+
+        setAlpha: function(a) {
+            this.globalAlpha = a / 255.0;
+        },
         setStrokeColor: function(r, g, b, a) {
             this.stroke_color = bbb.canvas.rgba(r, g, b, a);
             this.context.strokeStyle = this.stroke_color;
@@ -184,18 +188,35 @@ bbb.canvas.renderer = (function() {
             this.context.fillStyle = bbb.canvas.hsva(h, s, v, a);
             return this;
         },
+        setLineWidth: function(lw) {
+            this.context.lineWidth = lw;
+            return this;
+        },
         fill: function() {
             this.context.fill();
             return this;
         },
+
         moveTo: function(x, y) {
             this.context.moveTo(x, y);
+            return this;
+        },
+
+        // points
+        point: function(x, y) {
+            this.context.fillRect(x - 0.5, y - 0.5, 1, 1);
+            return this;
+        },
+        points: function(pts) {
+            for(var i = 0; i < pts.length; i++) this.context.fillRect(pts[i][0] - 0.5, pts[i][1] - 0.5, 1, 1);
             return this;
         },
         lineTo: function(x, y) {
             this.context.lineTo(x, y);
             return this;
         },
+
+        // lines / curves
         line: function(sx, sy, ex, ey) { 
             this.context.moveTo(sx, sy);
             this.context.lineTo(ex, ey);
@@ -206,6 +227,34 @@ bbb.canvas.renderer = (function() {
             for(var i = 1; i < pos.length; i++) this.context.lineTo(pos[i][0], pos[i][1]);
             return this;
         },
+        curveTo: function(cx, cy, ex, ey) {
+            this.context.quadraticCurveTo(cx, cy, ex, ey);
+            return this;
+        },
+        curve: function(sx, sy, cx, cy, ex, ey) {
+            this.context.moveTo(sx, sy);
+            this.context.quadraticCurveTo(cx, cy, ex, ey);
+            return this;
+        },
+        bezierTo: function(cx1, cy1, cx2, cy2, ex, ey) {
+            this.context.bezierCurveTo(cx1, cy1, cx2, cy2, ex, ey);
+            return this;
+        },
+        bezier: function(sx, sy, cx1, cy1, cx2, cy2, ex, ey) {
+            this.context.moveTo(sx, sy);
+            this.context.bezierCurveTo(cx1, cy1, cx2, cy2, x, y);
+            return this;
+        },
+        arc: function(x, y, radius, startAngle, endAngle, anticlockwise) {
+            this.context.arc(x, y, radius, startAngle, endAngle, anticlockwise);
+            return this;
+        },
+        arcTo: function(sx, sy, ex, ey, radius) {
+            this.context.arcTo(sx, sy, ex, ey, radius);
+            return this;
+        },
+
+        // rectangle
         rect: function(x, y, w, h) {
             this.context.fillRect(x, y, w, h);
             return this;
@@ -221,14 +270,6 @@ bbb.canvas.renderer = (function() {
             this.context.closePath();
             return this;
         },
-        point: function(x, y) {
-            this.context.fillRect(x - 0.5, y - 0.5, 1, 1);
-            return this;
-        },
-        points: function(pts) {
-            for(var i = 0; i < pts.length; i++) this.context.fillRect(pts[i][0] - 0.5, pts[i][1] - 0.5, 1, 1);
-            return this;
-        },
         gradient: function(x, y, w, h) { return this.context.createLinearGradient(x, y, w, h); },
         setStrokeGradient: function(grad) {
             this.context.strokeStyle = grad;
@@ -238,6 +279,36 @@ bbb.canvas.renderer = (function() {
             this.context.fillStyle = grad;
             return this;
         },
+
+        // transform
+        push: function() {
+            this.context.save();
+            return this;
+        },
+        pop: function() {
+            this.context.restore();
+            return this;
+        },
+        setTransform: function(m11, m12, m21, m22, dx, dy) {
+            this.context.setTransform(m11, m12, m21, m22, dx, dy);
+            return this;
+        },
+        transform: function(m11, m12, m21, m22, dx, dy) {
+            this.context.transform(m11, m12, m21, m22, dx, dy);
+            return this;
+        },
+        translate: function(dx, dy) {
+            this.context.translate(dx, dy);
+            return this;
+        },
+        rotate: function(rotation) {
+            this.context.rotate(rotation);
+            return this;
+        },
+        scale: function(sx, sy) {
+            sy === undefined ? this.context.scale(sx, sx) : this.context.scale(sx, sy);
+            return this;
+        }
     });
 
     return renderer;
