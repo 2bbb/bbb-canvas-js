@@ -85,6 +85,7 @@ bbb.canvas.renderer = (function() {
         bbb.extend(this, global);
     };
 
+    // extend render system
     bbb.extend(renderer.prototype, {
         bind: function(f) { return f.bind(this); },
         internal: {
@@ -159,8 +160,10 @@ bbb.canvas.renderer = (function() {
         },
         pause: function() { this.is_paused = true; return this; },
         resume: function() { this.is_paused = false; render(); return this; },
+    });
 
-        // draw functions
+    // extend draw functions
+    bbb.extend(renderer.prototype, {
         clear: function() { this.context.clearRect(0, 0, this.size.width, this.size.height); },
         beginPath: function() { this.context.beginPath(); },
         closePath: function() { this.context.closePath(); },
@@ -213,6 +216,11 @@ bbb.canvas.renderer = (function() {
         },
         lineTo: function(x, y) {
             this.context.lineTo(x, y);
+            return this;
+        },
+        circle: function(x, y, radius) {
+            this.moveTo(x + radius, y);
+            this.context.arc(x, y, radius, 0.0, 2.0 * Math.PI);
             return this;
         },
 
