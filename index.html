@@ -487,25 +487,95 @@
             },
             draw: function(context, app, renderer) {
                 this.clear();
-                context.save();
-                context.translate(this.size.width * 0.5, this.size.height * 0.5);
+                this.push();
+                this.translate(this.size.width * 0.5, this.size.height * 0.5);
                 this.setFillColor(255, 255, 255, 24);
                 this.setStrokeColor(255, 255, 255, 64);
                 app.properties.fragments.forEach(this.bind(function(frag) {
-                    context.save();
-                    context.rotate(frag.rotate * frag.zoom / 3.0 + this.frame * 0.01);
-                    context.scale(frag.zoom * 2, frag.zoom * 2);
-                    context.lineWidth = (0.5 / frag.zoom);
-                    context.beginPath();
-                    context.quadraticCurveTo(50, 50, 0, 100);
-                    context.quadraticCurveTo(-50, 150, 0, 200);
-                    context.quadraticCurveTo(100, 10, 0, 0);
-                    context.closePath();
-                    context.stroke();
-                    context.fill();
-                    context.restore();
+                    this.push();
+                    this.rotate(frag.rotate * frag.zoom / 3.0 + this.frame * 0.01);
+                    this.scale(frag.zoom * 2, frag.zoom * 2);
+                    this.setLineWidth(0.5 / frag.zoom);
+                    this.beginPath();
+                    this.curveTo(50, 50, 0, 100);
+                    this.curveTo(-50, 150, 0, 200);
+                    this.curveTo(100, 10, 0, 0);
+                    this.closePath();
+                    this.stroke();
+                    this.fill();
+                    this.pop();
                 }));
-                context.restore();
+                this.pop();
+            },
+        });
+    </script>
+    <script>
+        var circles = new bbb.canvas.app('circles', {
+            draw: function(context, app, renderer) {
+                this.clear();
+                this.beginPath();
+                this.setStrokeColor(255, 255, 255);
+                this.setFillColor(255, 255, 255, 32);
+                this.circle(this.mouse.x - this.size.width * 0.5 * (1.0 - this.scroll_pos),
+                            this.mouse.y - this.size.height * 0.5 * (1.0 - this.scroll_pos),
+                            bbb.math.distance(0, 0, this.mouse.x, this.mouse.y) * this.scroll_pos);
+                this.circle(this.mouse.x + this.size.width * 0.5 * (1.0 - this.scroll_pos),
+                            this.mouse.y + this.size.height * 0.5 * (1.0 - this.scroll_pos),
+                            bbb.math.distance(this.size.width, this.size.height, this.mouse.x, this.mouse.y) * this.scroll_pos);
+                this.stroke();
+                this.fill();
+            }
+        });
+    </script>
+    <script>
+        var transformer = new bbb.canvas.app('transformer', {
+            draw: function(context, app, renderer) {
+                this.clear();
+                var num = 60,
+                    size = this.size.height / num,
+                    smin = size * 0.5 / (1.0 + this.scroll_pos),
+                    smax = size * 1.5 * (1.0 + this.scroll_pos) * (1.0 + this.scroll_pos);
+                
+                this.setFillColor(255, 255, 255, 16);
+                for(var j = 0; j < num; j++) for(var i = 0; i < num; i++) {
+                    var x = i / num,
+                        y = j / num,
+                        s = bbb.math.smap(bbb.noise.perlin3(x, y, this.frame * 0.01), smin, smax);
+                    this.rect(
+                        x * this.size.width,
+                        y * this.size.height,
+                        s, s);
+                }
+
+                this.push();
+                this.translate(this.mouse.x, this.mouse.y);
+                this.transform(
+                    bbb.math.map(this.mouse.x, 0, this.size.width, -4, 4),
+                    bbb.math.map(this.mouse.y, 0, this.size.height, 0, 1),
+                    this.scroll_pos,
+                    1,
+                    0, 0
+                );
+                this.transform(
+                    bbb.math.map(this.ease_x, 0, this.size.width, -4, 4),
+                    bbb.math.map(this.ease_y, 0, this.size.height, 0, 1),
+                    this.scroll_pos,
+                    -1,
+                    0, 0
+                );
+                this.translate(-this.mouse.x, -this.mouse.y);
+                
+                this.setFillColor(255, 255, 255, 32);
+                for(var j = 0; j < num; j++) for(var i = 0; i < num; i++) {
+                    var x = i / num,
+                        y = j / num,
+                        s = bbb.math.smap(bbb.noise.perlin3(x, y, this.frame * 0.01), smin, smax);
+                    this.rect(
+                        x * this.size.width,
+                        y * this.size.height,
+                        s, s);
+                }
+                this.pop();
             },
         });
     </script>
@@ -519,7 +589,9 @@
             gradient,
             gradient2,
             dokidokiTexts,
-            zoom
+            zoom,
+            circles,
+            transformer,
         ];
         var hash = window.location.hash.replace('#', '');
         var selected_index = bbb.math.clamp((hash == '') ? (apps.length - 1) : (0 ^ hash), 0, apps.length - 1);
