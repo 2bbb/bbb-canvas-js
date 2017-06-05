@@ -42,6 +42,7 @@ var vec2 = (function() {
         sub: function(v, w) { return new vec2(v.x - w.x, v.y - w.y); },
         mul: function(v, s) { return new vec2(v.x * s, v.y * s); },
         div: function(v, s) { return new vec2(v.x / s, v.y / s); },
+        compose: function(v, w) { return new vec2(v.x * w.x - v.y * w.y, v.x * w.y + v.y * w.x); },
         eq: function(v, w) { return v.x == w.x && v.y == w.y; },
         neq: function(v, w) { return v.x != w.x || v.y != w.y; },
         dot: function(v, w) { return v.x * w.x + v.y * w.y; },
