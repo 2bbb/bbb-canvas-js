@@ -121,6 +121,7 @@ var vec2 = (function() {
         length: function() { return Math.sqrt(this.x * this.x + this.y * this.y); },
         lengthSquared: function() { return this.x * this.x + this.y + this.y; },
         distance: function(v) { return this.reflected().translate(v).length(); },
+        squareDistance: function(v) { return this.reflected().translate(v).length(); },
         dot: function(v) { return this.x * v.x + this.y * v.y; },
         cross: function(v) { return this.x * v.y + this.y * v.x; },
         angle: function() { return Math.atan(this.y, this.x); },
