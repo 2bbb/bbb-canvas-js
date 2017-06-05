@@ -1,4 +1,4 @@
-bbb.math = {
+var math = {
     lerp: function(from, to, t) { return from * (1.0 - t) + to * t; },
     clamp: function(v, from, to) { return Math.max(from, Math.min(to, v)); },
     length: function(x, y) { return Math.sqrt(x * x, y * y); },
@@ -27,6 +27,9 @@ var vec2 = (function() {
 
     bbb.extend(vec2, {
         isVec2: is_vec2,
+        create: function(x, y) { return new vec2(is_vec2(x) ? x : {x: x, y: y}); },
+        cast: function(x, y) { return is_vec2(x) ? x : {x: x, y: y}; },
+
         add: function(v, w) { return new vec2(v.x + w.x, v.y + w.y); },
         sub: function(v, w) { return new vec2(v.x - w.x, v.y - w.y); },
         mul: function(v, s) { return new vec2(v.x * s, v.y * s); },
@@ -34,12 +37,11 @@ var vec2 = (function() {
         eq: function(v, w) { return v.x == w.x && v.y == w.y; },
         neq: function(v, w) { return v.x != w.x || v.y != w.y; },
         dot: function(v, w) { return v.x * w.x + v.y * w.y; },
-        cross: function(w, w) { return v.x * w.y - v.y * w.x; },
+        cross: function(v, w) { return v.x * w.y - v.y * w.x; },
         abs: function(v) { return v.x * v.x + v.y * v.y; },
         length: function(v) { return Math.sqrt(v.x * v.x + v.y * v.y); },
         lerp: function(v, w, t) { var s = 1.0 - t; return new vec2(s * v.x + t * w.x, s * v.y + t * w.y); },
-        create: function(x, y) { return new vec2(is_vec2(x) ? x : {x: x, y: y}); },
-        cast: function(x, y) { return is_vec2(x) ? x : {x: x, y: y}; },
+        clamp: function(v, min, max) { return new vec2(math.clamp(v.x, min.x, max.v). math.clamp(v.y, min.y, max.y)); }, 
     });
     
     bbb.extend(vec2.prototype, {
@@ -103,6 +105,10 @@ var vec2 = (function() {
     return vec2;
 })();
 
-bbb.extend(bbb.math, {
+bbb.extend(math, {
     vec2: vec2
 });
+
+bbb.extend(bbb, {
+    math: math
+})
