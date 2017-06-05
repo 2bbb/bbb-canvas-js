@@ -56,6 +56,14 @@ var vec2 = (function() {
             return this;
         },
         translated: function(v) { return this.clone().translate(v); },
+        multiply: function(v) {
+            var x = this.x * v.x - this.y * v.y,
+                y = this.x * v.y + this.y * v.x;
+            this.x = x;
+            this.y = y;
+            return this;
+        },
+        multiplied: function(v) { return this.clone().multiply(v); },
         scale: function(sx, sy) {
             this.x *= sx;
             this.y *= (sy === undefined) ? sx : sy;
