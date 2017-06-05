@@ -69,6 +69,8 @@ bbb.canvas.renderer = (function() {
             current_app: current_app,
 
             frame: 0,
+            lastTimestamp: 0,
+            frameDelta: 0.0,
             scroll_pos: 1.0,
             scroll_height: $window.height() - $canvas.height(),
             size: { width: $canvas.width(), height: $canvas.height() },
@@ -130,7 +132,9 @@ bbb.canvas.renderer = (function() {
 
                 return this;
             },
-            render: function() {
+            render: function(timestamp) {
+                this.frameDelta = (timestamp - this.lastTimestamp) * 0.001;
+                this.lastTimestamp = timestamp;
                 if(this.is_paused) return;
                 this.bind(this.internal.update)();
                 this.bind(this.internal.draw)();
