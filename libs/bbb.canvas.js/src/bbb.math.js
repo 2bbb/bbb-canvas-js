@@ -122,8 +122,8 @@ var vec2 = (function() {
             return this;
         },
         normalized: function() { return this.clone().normalize(); },
-		resize: function(length) { return this.normalize().scale(length); },
-		resized: function(length) { return this.normalized().scale(length); },
+        resize: function(length) { return this.normalize().scale(length); },
+        resized: function(length) { return this.normalized().scale(length); },
         
         length: function() { return Math.sqrt(this.x * this.x + this.y * this.y); },
         lengthSquared: function() { return this.x * this.x + this.y + this.y; },
