@@ -89,6 +89,16 @@ var vec2 = (function() {
             return this;
         },
         rotatedTo: function(rad) { return this.clone().rotateTo(rad); },
+        average: function(vs) {
+            for(var i = 0; i < vs.length; i++) {
+                this.x += vs[i].x;
+                this.y += vs[i].y;
+            }
+            this.x /= (vs.length + 1);
+            this.y /= (vs.length + 1);
+            return this;
+        },
+        averaged: function(vs) { return this.clone().average(vs); },
         interpolate: function(v, t) {
             var s = 1.0 - t;
             this.x = s * this.x + t * v.x;
