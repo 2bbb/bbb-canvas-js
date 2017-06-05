@@ -96,7 +96,7 @@ var vec2 = (function() {
             this.y *= l;
             return this;
         },
-        normalized: function() { this.clone().normalize(); },
+        normalized: function() { return this.clone().normalize(); },
         distance: function(v) { return this.reflected().translate(v).length(); },
         dot: function(v) { return this.x * v.x + this.y * v.y; },
         cross: function(v) { return this.x * v.y + this.y * v.x; },
