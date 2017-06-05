@@ -49,6 +49,7 @@ var vec2 = (function() {
     bbb.extend(vec2.prototype, {
         clone: function() { return new vec2(this); },
         eq: function(v) { return this.x == v.x && this.y == v.y; },
+        
         translate: function(v) {
             this.x += v.x;
             this.y += v.y;
@@ -80,7 +81,6 @@ var vec2 = (function() {
             return this;
         },
         rotatedTo: function(rad) { return this.clone().rotateTo(rad); },
-        length: function() { return Math.sqrt(this.x * this.x + this.y * this.y); },
         interpolate: function(v, t) {
             var s = 1.0 - t;
             this.x = s * this.x + t * v.x;
@@ -97,6 +97,10 @@ var vec2 = (function() {
             return this;
         },
         normalized: function() { return this.clone().normalize(); },
+		resize: function(length) { return this.normalize().scale(length); },
+		resized: function(length) { return this.normalized().scale(length); },
+        
+        length: function() { return Math.sqrt(this.x * this.x + this.y * this.y); },
         distance: function(v) { return this.reflected().translate(v).length(); },
         dot: function(v) { return this.x * v.x + this.y * v.y; },
         cross: function(v) { return this.x * v.y + this.y * v.x; },
