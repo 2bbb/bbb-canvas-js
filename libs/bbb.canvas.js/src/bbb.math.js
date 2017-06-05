@@ -13,7 +13,7 @@ var math = {
         y1 -= y2;
         return x1 * x1 + y1 * y1;
     },
-    // nmap: [imin, imax] -> [omin, omax]
+    // map: [imin, imax] -> [omin, omax]
     map: function(v, imin, imax, omin, omax) { return (v - imin) / (imax - imin) * (omax - omin) + omin; },
     // nmap: [0, 1] -> [omin, omax]
     nmap: function(v, omin, omax) { return v * (omax - omin) + omin; },
