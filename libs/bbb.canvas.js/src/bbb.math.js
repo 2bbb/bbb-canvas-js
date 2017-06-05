@@ -1,11 +1,17 @@
 var math = {
     lerp: function(from, to, t) { return from * (1.0 - t) + to * t; },
     clamp: function(v, from, to) { return Math.max(from, Math.min(to, v)); },
-    length: function(x, y) { return Math.sqrt(x * x, y * y); },
+    length: function(x, y) { return Math.sqrt(x * x + y * y); },
+    lengthSquared: function(x, y) { return x * x + y * y; },
     distance: function(x1, y1, x2, y2) {
         x1 -= x2;
         y1 -= y2;
         return Math.sqrt(x1 * x1 + y1 * y1);
+    },
+    squareDistance: function(x1, y1, x2, y2) {
+        x1 -= x2;
+        y1 -= y2;
+        return x1 * x1 + y1 * y1;
     },
     // nmap: [imin, imax] -> [omin, omax]
     map: function(v, imin, imax, omin, omax) { return (v - imin) / (imax - imin) * (omax - omin) + omin; },
@@ -120,8 +126,8 @@ var vec2 = (function() {
         
         length: function() { return Math.sqrt(this.x * this.x + this.y * this.y); },
         lengthSquared: function() { return this.x * this.x + this.y + this.y; },
-        distance: function(v) { return this.reflected().translate(v).length(); },
-        squareDistance: function(v) { return this.reflected().translate(v).length(); },
+        distance: function(v) { return math.distance(this.x, this.y, v.x, v.y); },
+        squareDistance: function(v) { return math.squareDistance(this.x, this.y, v.x, v.y); },
         dot: function(v) { return this.x * v.x + this.y * v.y; },
         cross: function(v) { return this.x * v.y + this.y * v.x; },
         angle: function() { return Math.atan(this.y, this.x); },
@@ -137,4 +143,4 @@ bbb.extend(math, {
 
 bbb.extend(bbb, {
     math: math
-})
+});
