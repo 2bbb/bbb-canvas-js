@@ -74,8 +74,8 @@ bbb.canvas.renderer = (function() {
             scroll_pos: 1.0,
             scroll_height: $window.height() - $canvas.height(),
             size: { width: $canvas.width(), height: $canvas.height() },
-            center: { x: $canvas.width() * 0.5, y: $canvas.height() * 0.5 },
-            mouse: { x: 0, y: 0 },
+            center: bbb.math.vec2.create({ x: $canvas.width() * 0.5, y: $canvas.height() * 0.5 }),
+            mouse: bbb.math.vec2.create({x: 0, y: 0}),
             resize: function() {},
             is_paused: false,
         });
@@ -204,85 +204,93 @@ bbb.canvas.renderer = (function() {
             return this;
         },
 
-        moveTo: function(x, y) {
-            this.context.moveTo(x, y);
+        moveTo: function(p) {
+            this.context.moveTo(p.x, p.y);
             return this;
         },
 
         // points
-        point: function(x, y) {
-            this.context.fillRect(x - 0.5, y - 0.5, 1, 1);
+        point: function(p) {
+            this.context.fillRect(p.x - 0.5, p.y - 0.5, 1, 1);
             return this;
         },
         points: function(pts) {
-            for(var i = 0; i < pts.length; i++) this.context.fillRect(pts[i][0] - 0.5, pts[i][1] - 0.5, 1, 1);
+            for(var i = 0; i < pts.length; i++) this.context.fillRect(pts[i].x - 0.5, pts[i].y - 0.5, 1, 1);
             return this;
         },
-        lineTo: function(x, y) {
-            this.context.lineTo(x, y);
-            return this;
-        },
-        circle: function(x, y, radius) {
-            this.moveTo(x + radius, y);
-            this.context.arc(x, y, radius, 0.0, 2.0 * Math.PI);
+        circle: function(p, radius) {
+            this.context.moveTo(p.x + radius, p.y);
+            this.context.arc(p.x, p.y, radius, 0.0, 2.0 * Math.PI);
             return this;
         },
 
         // lines / curves
-        line: function(sx, sy, ex, ey) { 
-            this.context.moveTo(sx, sy);
-            this.context.lineTo(ex, ey);
+        line: function(s, e) { 
+            this.context.moveTo(s.x, s.y);
+            this.context.lineTo(e.x, e.y);
             return this;
         },
-        lines: function(pos) {
-            this.context.moveTo(pos[0][0], pos[0][1]);
-            for(var i = 1; i < pos.length; i++) this.context.lineTo(pos[i][0], pos[i][1]);
+        lineTo: function(p) {
+            this.context.lineTo(p.x, p.y);
             return this;
         },
-        curveTo: function(cx, cy, ex, ey) {
-            this.context.quadraticCurveTo(cx, cy, ex, ey);
+        lines: function(ps) {
+            this.context.moveTo(ps[0].x, pos[0].y);
+            for(var i = 1; i < ps.length; i++) this.context.lineTo(ps[i].x, pos[i].y);
             return this;
         },
-        curve: function(sx, sy, cx, cy, ex, ey) {
-            this.context.moveTo(sx, sy);
-            this.context.quadraticCurveTo(cx, cy, ex, ey);
+        curveTo: function(c, e) {
+            this.context.quadraticCurveTo(c.x, c.y, e.x, e.y);
             return this;
         },
-        bezierTo: function(cx1, cy1, cx2, cy2, ex, ey) {
-            this.context.bezierCurveTo(cx1, cy1, cx2, cy2, ex, ey);
+        curve: function(s, c, e) {
+            this.context.moveTo(s.x, s.y);
+            this.context.quadraticCurveTo(c.x, c.y, e.x, e.y);
             return this;
         },
-        bezier: function(sx, sy, cx1, cy1, cx2, cy2, ex, ey) {
-            this.context.moveTo(sx, sy);
-            this.context.bezierCurveTo(cx1, cy1, cx2, cy2, x, y);
+        bezierTo: function(c1, c2, e) {
+            this.context.bezierCurveTo(c1.x, c1.y, c2.x, c2.y, e.x, e.y);
             return this;
         },
-        arc: function(x, y, radius, startAngle, endAngle, anticlockwise) {
-            this.context.arc(x, y, radius, startAngle, endAngle, anticlockwise);
+        bezier: function(s, c1, c2, e) {
+            this.context.moveTo(s.x, s.y);
+            this.context.bezierCurveTo(c1.x, c1.y, c2.x, c2.y, e.x, e.y);
             return this;
         },
-        arcTo: function(sx, sy, ex, ey, radius) {
-            this.context.arcTo(sx, sy, ex, ey, radius);
+        arc: function(p, radius, startAngle, endAngle, anticlockwise) {
+            this.context.arc(p.x, p.y, radius, startAngle, endAngle, anticlockwise);
+            return this;
+        },
+        arcTo: function(s, e, radius) {
+            this.context.arcTo(s.x, s.y, e.x, e.y, radius);
             return this;
         },
 
         // rectangle
-        rect: function(x, y, w, h) {
-            this.context.fillRect(x, y, w, h);
+        rect: function(p, w, h) {
+            this.context.fillRect(p.x, p.y, w, h);
             return this;
         },
-        strokeRect: function(x, y, w, h) {
-            this.context.strokeRect(x, y, w, h);
+        strokeRect: function(p, w, h) {
+            this.context.strokeRect(p.x, p.y, w, h);
             return this;
         },
-        polygon: function(pos) {
+        rectCenter: function(p, w, h) {
+            this.context.fillRect(p.x - 0.5 * w, p.y - 0.5 * h, w, h);
+            return this;
+        },
+        strokeRectCenter: function(p, w, h) {
+            this.context.strokeRect(p.x - 0.5 * w, p.y - 0.5 * h, w, h);
+            return this;
+        },
+        polygon: function(ps) {
             this.context.beginPath();
-            this.context.moveTo(pos[0][0], pos[0][1]);
-            for(var i = 1; i < pos.length; i++) this.context.lineTo(pos[i][0], pos[i][1]);
+            this.context.moveTo(ps[0].x, ps[0].y);
+            for(var i = 1; i < ps.length; i++) this.context.lineTo(ps[i].x, ps[i].y);
             this.context.closePath();
             return this;
         },
-        gradient: function(x, y, w, h) { return this.context.createLinearGradient(x, y, w, h); },
+        gradient: function(p, w, h) { return this.context.createLinearGradient(p.x, p.y, w, h); },
         setStrokeGradient: function(grad) {
             this.context.strokeStyle = grad;
             return this;
@@ -309,8 +317,8 @@ bbb.canvas.renderer = (function() {
             this.context.transform(m11, m12, m21, m22, dx, dy);
             return this;
         },
-        translate: function(dx, dy) {
-            this.context.translate(dx, dy);
+        translate: function(dp) {
+            this.context.translate(dp.x, dp.y);
             return this;
         },
         rotate: function(rotation) {

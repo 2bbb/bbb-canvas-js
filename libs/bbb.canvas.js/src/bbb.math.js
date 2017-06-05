@@ -17,18 +17,20 @@ var math = {
 
 var vec2 = (function() {
     function vec2(v) {
+        v = v || {};
         bbb.extend(this, {
-            x: v.x,
-            y: v.y,
+            x: v.x || 0.0,
+            y: v.y || 0.0,
         });
     };
     
-    function is_vec2(v) { return v instanceof vec2; };
+    function is_vec2(v) { return (v instanceof vec2); };
+    function is_quasivec2(v) { return (v instanceof vec2) || ((v instanceof Object) && 'x' in v && 'y' in v); };
 
     bbb.extend(vec2, {
         isVec2: is_vec2,
-        create: function(x, y) { return new vec2(is_vec2(x) ? x : {x: x, y: y}); },
-        cast: function(x, y) { return is_vec2(x) ? x : {x: x, y: y}; },
+        create: function(x, y) { return (x === undefined) ? (new vec2()) : (new vec2(is_quasivec2(x) ? x : {x: x, y: y})); },
+        cast: function(x, y) { return is_quasivec2(x) ? x : {x: x, y: y}; },
 
         add: function(v, w) { return new vec2(v.x + w.x, v.y + w.y); },
         sub: function(v, w) { return new vec2(v.x - w.x, v.y - w.y); },
@@ -52,14 +54,14 @@ var vec2 = (function() {
             this.y += v.y;
             return this;
         },
-        translated: function(v) { return this.clone().translate(this.x + v.x, this.y + v.y); },
+        translated: function(v) { return this.clone().translate(v); },
         scale: function(sx, sy) {
             this.x *= sx;
-            this.y *= sy === undefined ? sx : sy;
+            this.y *= (sy === undefined) ? sx : sy;
             return this;
         },
         scaled: function(sx, sy) { return this.clone().scale(sx, sy); },
-        reflct: function() { return this.scale(-1.0); },
+        reflect: function() { return this.scale(-1.0); },
         reflected: function() { return this.scaled(-1.0); },
         rotate: function(rad) {
             var c = Math.cos(rad),
@@ -77,8 +79,8 @@ var vec2 = (function() {
             this.y = Math.sin(rad) * len;
             return this;
         },
-        rotatedTo: function(rad) { this.clone().rotateTo(rad); },
-        length: function() { return Math.sqrt(this.x * this.x + this.y + this.y); },
+        rotatedTo: function(rad) { return this.clone().rotateTo(rad); },
+        length: function() { return Math.sqrt(this.x * this.x + this.y * this.y); },
         interpolate: function(v, t) {
             var s = 1.0 - t;
             this.x = s * this.x + t * v.x;
@@ -88,14 +90,14 @@ var vec2 = (function() {
         interpolated: function(v, t) { return this.clone().interpolated(v, t); },
         middle: function(v) { return this.interpolate(v, 0.5); },
         middled: function(v) { return this.clone().interpolate(v, 0.5); },
-        normalize: function(v) {
+        normalize: function() {
             var l = 1.0 / this.length();
             this.x *= l;
             this.y *= l;
             return this;
         },
-        normalized: function(v) { this.clone().normalize(v); },
-        distance: function(v) { return v.reflected().translate(v).length(); },
+        normalized: function() { this.clone().normalize(); },
+        distance: function(v) { return this.reflected().translate(v).length(); },
         dot: function(v) { return this.x * v.x + this.y * v.y; },
         cross: function(v) { return this.x * v.y + this.y * v.x; },
         angle: function() { return Math.atan(this.y, this.x); },
