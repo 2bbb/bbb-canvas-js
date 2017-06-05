@@ -422,18 +422,21 @@
         var dokidokiTexts = new bbb.canvas.app('dokidoki_texts', {
             draw: function(context, app, renderer) {
                 var props = app.properties;
-                context.textAlign = 'center';
                 this.clear();
                 var p = (Math.cos(this.frame * 0.1) + 1) * (Math.cos(this.frame * 0.1) + 1);
                 var pc = 64 * this.scroll_pos * this.scroll_pos * p * 0.25;
-                context.font = (16 + 48 * (this.scroll_pos + 0.2) * (this.scroll_pos + 0.2) * p * 0.25) + 'px sans-serif';
+                this.setFont({
+                    family: 'sans-serif',
+                    size: 16 + 48 * (this.scroll_pos + 0.2) * (this.scroll_pos + 0.2) * p * 0.25
+                });
+                this.setTextAlign('center');
                 props.texts.map(this.bind(function(text) {
                     this.setFillColor(192 + pc, 192 - pc, 192 - pc, text.alpha);
-                    context.save();
-                    context.translate(text.x, text.y);
-                    context.rotate(Math.atan2(this.mouse.y - text.y, this.mouse.x - text.x) - Math.PI * 0.5);
-                    context.fillText(text.text, 0, 0);
-                    context.restore();
+                    this.push();
+                    this.translate(text);
+                    this.rotate(Math.atan2(this.mouse.y - text.y, this.mouse.x - text.x) - Math.PI * 0.5);
+                    this.text(text.text, {x: 0, y: 0});
+                    this.pop();
                     text.alpha = (text.alpha * text.speed) ^ 0;
                 }));
                 props.texts = props.texts.filter(function(t) { return 3 < t.alpha; });
@@ -638,6 +641,19 @@
                         }
                         this.ease_x = this.ease_x * p + this.mouse.x * (1.0 - p);
                         this.ease_y = this.ease_y * p + this.mouse.y * (1.0 - p);
+                    },
+                    drawForeground: function(context, props) {
+                        this.pushFontSetting();
+                        
+                        this.setFillColor(255, 255, 255);
+                        this.setFont({
+                            family: 'monospace',
+                            size: 16
+                        });
+                        this.setTextAlign('right');
+                        var splitted = (this.frameDelta * 1000.0 + "").split('.');
+                        var ms = (splitted.length == 2 ? splitted : [splitted[0], '0000']).map(function(t, i) { return (i == 0) ? t : (t + '0000').substr(0, 4); }).join(".");
+                        this.text(ms + "ms", {x: this.size.width - 40, y: 25});
                     }
                 }
             );

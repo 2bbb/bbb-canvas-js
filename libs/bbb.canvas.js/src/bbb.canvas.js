@@ -78,12 +78,16 @@ bbb.canvas.renderer = (function() {
             mouse: bbb.math.vec2.create({x: 0, y: 0}),
             resize: function() {},
             is_paused: false,
+
+            fontStates: [],
+            colorStates: [],
         });
         
         bbb.extend(this, global.properties || {});
         global.setup  = global.setup  || function global_setup() {};
         global.update = global.update || function global_update() {};
-        global.draw   = global.draw   || function global_draw() {};
+        global.drawBackground   = global.drawBackground   || function global_draw_background() {};
+        global.drawForeground   = global.drawForeground   || function global_draw_foreground() {};
         bbb.extend(this, global);
     };
 
@@ -117,8 +121,29 @@ bbb.canvas.renderer = (function() {
                 this.frame++;
             },
             draw: function() {
-                this.draw(this.context, this.properties);
+                this.push();
+                this.pushColorSetting();
+                this.pushFontSetting();
+                this.drawBackground(this.context, this.properties);
+                this.popFontSetting();
+                this.popColorSetting();
+                this.pop();
+                
+                this.push();
+                this.pushColorSetting();
+                this.pushFontSetting();
                 this.bind(this.currentApp().draw)(this.context, this.currentApp(), this);
+                this.popFontSetting();
+                this.popColorSetting();
+                this.pop();
+
+                this.push();
+                this.pushColorSetting();
+                this.pushFontSetting();
+                this.drawForeground(this.context, this.properties);
+                this.popFontSetting();
+                this.popColorSetting();
+                this.pop();
             },
             init: function() {
                 var that = this;
@@ -183,6 +208,7 @@ bbb.canvas.renderer = (function() {
             this.stroke_color = bbb.canvas.hsva(h, s, v, a);
             this.context.strokeStyle = this.stroke_color;
         },
+        strokeColor: function() { return this.strokeStyle; },
         stroke: function() {
             this.context.stroke();
             return this;
@@ -195,6 +221,7 @@ bbb.canvas.renderer = (function() {
             this.context.fillStyle = bbb.canvas.hsva(h, s, v, a);
             return this;
         },
+        fillColor: function() { return this.fillStyle; },
         setLineWidth: function(lw) {
             this.context.lineWidth = lw;
             return this;
@@ -206,6 +233,19 @@ bbb.canvas.renderer = (function() {
 
         moveTo: function(p) {
             this.context.moveTo(p.x, p.y);
+            return this;
+        },
+        pushColorSetting: function() {
+            this.colorStates.push({
+                stroke: this.strokeColor(),
+                fill: this.fillColor()
+            });
+            return this;
+        },
+        popColorSetting: function() {
+            var state = this.colorStates.pop();
+            this.setStrokeColor(state.stroke);
+            this.setFillColor(state.fill);
             return this;
         },
 
@@ -297,6 +337,40 @@ bbb.canvas.renderer = (function() {
         },
         setFillGradient: function(grad) {
             this.context.fillStyle = grad;
+            return this;
+        },
+
+        // text
+        text: function(str, pos) {
+            this.context.fillText(str, pos.x, pos.y);
+            return this;
+        },
+        strokeText: function(str, pos) {
+            this.context.strokeText(str, pos.x, pos.y);
+            return this;
+        },
+        setFont: function(setting) {
+            setting.size = (typeof setting.size === 'number') ? (setting.size + 'px') : setting.size;
+            this.context.font = setting.size + ' ' + (Array.isArray(setting.family) ? setting.family.join(', ') : setting.family);
+            return this;
+        },
+        font: function() { return this.context.font; },
+        setTextAlign: function(align) {
+            this.context.textAlign = align;
+            return this;
+        },
+        textAlign: function() { return this.context.textAlign; },
+        pushFontSetting: function() {
+            this.fontStates.push({
+                font: this.font(),
+                textAlign: this.textAlign()
+            });
+            return this;
+        },
+        popFontSetting: function() {
+            var state = this.fontStates.pop();
+            this.setFont(state.font);
+            this.setTextAlign(state.textAlign);
             return this;
         },
 
