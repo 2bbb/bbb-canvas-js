@@ -132,7 +132,7 @@ var vec2 = (function() {
         dot: function(v) { return this.x * v.x + this.y * v.y; },
         cross: function(v) { return this.x * v.y + this.y * v.x; },
         angle: function() { return Math.atan(this.y, this.x); },
-        angleTo: function(v) { return v.reflected().translate(this).angle(); },
+        angleTo: function(v) { return -this.reflected().translate(v).angle(); },
         toString: function() { return "(" + this.x + ", " + this.y + ")"; },
     });
     return vec2;
