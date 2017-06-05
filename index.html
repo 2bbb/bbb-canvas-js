@@ -643,8 +643,6 @@
                         this.ease_y = this.ease_y * p + this.mouse.y * (1.0 - p);
                     },
                     drawForeground: function(context, props) {
-                        this.pushFontSetting();
-                        
                         this.setFillColor(255, 255, 255);
                         this.setFont({
                             family: 'monospace',
