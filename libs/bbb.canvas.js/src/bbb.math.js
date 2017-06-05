@@ -75,8 +75,8 @@ var vec2 = (function() {
         rotate: function(rad) {
             var c = Math.cos(rad),
                 s = Math.sin(rad),
-                x = c * this.x + s * this.y,
-                y = -s * this.y + c * this.x;
+                x = c * this.x - s * this.y,
+                y = s * this.y + c * this.x;
             this.x = x;
             this.y = y;
             return this;
