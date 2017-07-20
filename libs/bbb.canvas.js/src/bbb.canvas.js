@@ -104,7 +104,7 @@ bbb.canvas.renderer = (function() {
                 this.center.y = this.$canvas.height() * 0.5;
                 this.scroll_height = (this.$document.height() == this.$window.height()) ? -1 : (this.$document.height() - this.$window.height());
 
-                this.currentApp().resize(this.context, this.currentApp(), this);
+                this.currentApp().resize.bind(this)(this.context, this.currentApp(), this);
             },
             mousemove: function(event) {
                 this.mouse.x = event.pageX;
